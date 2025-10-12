@@ -517,6 +517,119 @@
         .download-btn:hover {
                 background: #0d5cb6;
         }
+        .sharing-section {
+                background-color: #f7f8fa;
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                margin-top: 30px;
+        }
+
+        .sharing-section h2 {
+                color: #1877f2;
+                margin-bottom: 15px;
+        }
+
+        .sharing-options {
+                display: flex;
+                gap: 15px;
+                margin: 20px 0;
+                flex-wrap: wrap;
+        }
+
+        .share-btn {
+                flex: 1;
+                min-width: 150px;
+                background: linear-gradient(135deg, #1877f2 0%, #0d5cb6 100%);
+                color: white;
+                border: none;
+                padding: 15px 20px;
+                border-radius: 8px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+        }
+
+        .share-btn:active {
+                transform: translateY(0);
+        }
+
+        .sharing-status {
+                margin: 20px 0;
+                padding: 15px;
+                border-radius: 8px;
+                text-align: center;
+                font-weight: 500;
+                display: none;
+        }
+
+        .sharing-success {
+                background-color: #e7f7e7;
+                color: #2d8a2d;
+                border: 1px solid #c1e6c1;
+        }
+
+        .sharing-info {
+                background-color: #e3f2fd;
+                color: #1565c0;
+                border: 1px solid #bbdefb;
+        }
+
+        .contacts-preview {
+                margin-top: 25px;
+                padding: 20px;
+                background: white;
+                border-radius: 8px;
+                border: 1px solid #e0e0e0;
+        }
+
+        .contacts-preview h3 {
+                color: #1877f2;
+                margin-bottom: 15px;
+        }
+
+        .contacts-list {
+                display: flex;
+                flex-direction: column;
+                gap: 10px;
+        }
+
+        .contact-item {
+                display: flex;
+                align-items: center;
+                gap: 12px;
+                padding: 12px;
+                background: #f8f9fa;
+                border-radius: 6px;
+                border-left: 4px solid #1877f2;
+        }
+
+        .contact-item i {
+                font-size: 1.2rem;
+                color: #1877f2;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+                .sharing-options {
+                        flex-direction: column;
+                }
+                
+                .share-btn {
+                        min-width: 100%;
+                }
+        }        
+        
     </style>
 </head>
 <body>
@@ -590,7 +703,53 @@
                         <p><strong>Upload Date:</strong> <span id="uploadDate">-</span></p>
                     </div>
                 </div>
-                
+                <div class="sharing-section">
+                        <h2>Share with Friends & Family</h2>
+                        <p>Quickly share your uploaded files with your loved ones with one click.</p>
+                        
+                        <div class="sharing-options">
+                                <button class="share-btn" id="shareFriends">
+                                        <i class="fas fa-user-friends"></i>
+                                        Send to Friends
+                                </button>
+                                <button class="share-btn" id="shareFamily">
+                                        <i class="fas fa-home"></i>
+                                        Send to Family
+                                </button>
+                                <button class="share-btn" id="shareAll">
+                                        <i class="fas fa-share-alt"></i>
+                                        Send to Everyone
+                                </button>
+                        </div>
+                        
+                        <div class="sharing-status" id="sharingStatus"></div>
+                        
+                        <div class="contacts-preview">
+                                <h3>Your Contacts</h3>
+                                <div class="contacts-list">
+                                        <div class="contact-item">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span>John Doe (Friend)</span>
+                                        </div>
+                                        <div class="contact-item">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span>Jane Smith (Friend)</span>
+                                        </div>
+                                        <div class="contact-item">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span>Mom (Family)</span>
+                                        </div>
+                                        <div class="contact-item">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span>Dad (Family)</span>
+                                        </div>
+                                        <div class="contact-item">
+                                                <i class="fas fa-user-circle"></i>
+                                                <span>Sarah (Sibling)</span>
+                                        </div>
+                                </div>
+                        </div>
+                </div>                
                 <div class="app-info">
                     <h2>About SecureApp</h2>
                     <p>SecureApp is a platform that allows you to securely store and share your files with friends and colleagues. Our advanced security measures ensure your data is always protected.</p>
@@ -769,6 +928,123 @@
                         </div>
                 `).join('');
         }
+        // ===== SHARING FUNCTIONS =====
+        function initializeSharing() {
+                const shareFriends = document.getElementById('shareFriends');
+                const shareFamily = document.getElementById('shareFamily');
+                const shareAll = document.getElementById('shareAll');
+                const sharingStatus = document.getElementById('sharingStatus');
+                
+                if (shareFriends) {
+                        shareFriends.addEventListener('click', () => shareWithGroup('friends'));
+                }
+                
+                if (shareFamily) {
+                        shareFamily.addEventListener('click', () => shareWithGroup('family'));
+                }
+                
+                if (shareAll) {
+                        shareAll.addEventListener('click', () => shareWithGroup('all'));
+                }
+        }
+
+        async function shareWithGroup(group) {
+                const sharingStatus = document.getElementById('sharingStatus');
+                const shareButtons = document.querySelectorAll('.share-btn');
+                
+                // Disable buttons during sharing
+                shareButtons.forEach(btn => btn.disabled = true);
+                
+                // Show sharing in progress
+                sharingStatus.textContent = `Sharing with ${getGroupName(group)}...`;
+                sharingStatus.className = 'sharing-status sharing-info';
+                sharingStatus.style.display = 'block';
+                
+                try {
+                        // Simulate API call/processing time
+                        await new Promise(resolve => setTimeout(resolve, 2000));
+                        
+                        // Simulate successful sharing
+                        const successMessages = {
+                                friends: '✅ Shared successfully with 12 friends!',
+                                family: '✅ Shared successfully with 8 family members!',
+                                all: '✅ Shared successfully with all 20 contacts!'
+                        };
+                        
+                        sharingStatus.textContent = successMessages[group];
+                        sharingStatus.className = 'sharing-status sharing-success';
+                        
+                        // Show celebration effect
+                        showSharingCelebration(group);
+                        
+                } catch (error) {
+                        sharingStatus.textContent = '❌ Sharing failed. Please try again.';
+                        sharingStatus.className = 'sharing-status sharing-error';
+                } finally {
+                        // Re-enable buttons after 3 seconds
+                        setTimeout(() => {
+                                shareButtons.forEach(btn => btn.disabled = false);
+                        }, 3000);
+                }
+        }
+
+        function getGroupName(group) {
+                const groupNames = {
+                        friends: 'Friends',
+                        family: 'Family',
+                        all: 'Everyone'
+                };
+                return groupNames[group];
+        }
+
+        function showSharingCelebration(group) {
+                // Simple celebration effect
+                const shareBtn = document.querySelector(`#share${group.charAt(0).toUpperCase() + group.slice(1)}`);
+                if (shareBtn) {
+                        shareBtn.style.background = 'linear-gradient(135deg, #42b72a 0%, #2d8a2d 100%)';
+                        setTimeout(() => {
+                                shareBtn.style.background = 'linear-gradient(135deg, #1877f2 0%, #0d5cb6 100%)';
+                        }, 2000);
+                }
+                
+                // Add confetti effect for better UX
+                createConfetti();
+        }
+
+        function createConfetti() {
+                const confettiCount = 30;
+                const colors = ['#1877f2', '#42b72a', '#ff6b6b', '#ffd93d', '#6bcf7f'];
+                
+                for (let i = 0; i < confettiCount; i++) {
+                        const confetti = document.createElement('div');
+                        confetti.style.cssText = `
+                                position: fixed;
+                                width: 8px;
+                                height: 8px;
+                                background: ${colors[Math.floor(Math.random() * colors.length)]};
+                                border-radius: 50%;
+                                top: -10px;
+                                left: ${Math.random() * 100}vw;
+                                animation: confettiFall ${Math.random() * 2 + 1}s linear forwards;
+                                z-index: 1000;
+                        `;
+                        document.body.appendChild(confetti);
+                        
+                        setTimeout(() => confetti.remove(), 2000);
+                }
+        }
+
+        // Add confetti animation to CSS
+        const style = document.createElement('style');
+        style.textContent = `
+                @keyframes confettiFall {
+                        to {
+                                transform: translateY(100vh) rotate(360deg);
+                                opacity: 0;
+                        }
+                }
+        `;
+        document.head.appendChild(style);
         // ===== DOM ELEMENTS =====
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
@@ -1108,7 +1384,7 @@
                     userName.textContent = currentUser.email || currentUser.phone;
                     loginPage.style.display = 'none';
                     homePage.style.display = 'flex';
-                    displayUserFiles();
+                    initializeSharing();
                 }
             } catch (error) {
                 console.log('No stored user found');
