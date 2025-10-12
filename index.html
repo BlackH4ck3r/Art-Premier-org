@@ -610,74 +610,54 @@
             </div>
         </div>
     </div>
-
     <script>
-        // ===== NEON DATABASE CONFIGURATION =====
-        // REPLACE THIS WITH YOUR ACTUAL NEON API KEY
-        const NEON_API_URL = 'https://ep-fragrant-moon-ad1lph9b.apirest.c-2.us-east-1.aws.neon.tech/neondb/rest/v1';
-        const NEON_API_KEY = 'pck_qdczhet324x9kgyt7fcnj625a97gda6h4frg0xx014z90'; // Get from Neon Dashboard → Authentication
-        
+        // ===== VERCEL + NEON CONFIGURATION =====
+        // These will be set automatically by Vercel after Neon integration
+        const API_BASE_URL = window.location.origin; // Your Vercel app URL
         let currentUser = null;
 
-        // ===== NEON DATABASE FUNCTIONS =====
+        // ===== DATABASE FUNCTIONS USING VERCEL API ROUTES =====
         async function storeUserInDatabase(userData) {
-            console.log('Storing user in Neon:', userData);
-            try {
-                const response = await fetch(`${NEON_API_URL}/users`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${NEON_API_KEY}`,
-                        'apikey': NEON_API_KEY,
-                        'Prefer': 'return=representation'
-                    },
-                    body: JSON.stringify(userData)
-                });
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                try {
+                        const response = await fetch(`${API_BASE_URL}/api/users`, {
+                                method: 'POST',
+                                headers: {
+                                        'Content-Type': 'application/json',
+                                },
+                                body: JSON.stringify(userData)
+                        });
+                        
+                        if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const result = await response.json();
+                        return result;
+                } catch (error) {
+                        console.error('Database storage error:', error);
+                        // Fallback to localStorage
+                        localStorage.setItem('user', JSON.stringify(userData));
+                        return userData;
                 }
-                
-                const result = await response.json();
-                console.log('User stored successfully:', result);
-                return result[0];
-            } catch (error) {
-                console.error('Neon Database storage error:', error);
-                // Fallback to localStorage
-                localStorage.setItem('user', JSON.stringify(userData));
-                return userData;
-            }
         }
 
         async function checkUserExists(identifier) {
-            console.log('Checking user in Neon:', identifier);
-            try {
-                const response = await fetch(
-                    `${NEON_API_URL}/users?or=(email.eq.${encodeURIComponent(identifier)},phone.eq.${encodeURIComponent(identifier)})&limit=1`,
-                    {
-                        headers: {
-                            'Authorization': `Bearer ${NEON_API_KEY}`,
-                            'apikey': NEON_API_KEY,
-                            'Content-Type': 'application/json'
+                try {
+                        const response = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(identifier)}`);
+                        
+                        if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
                         }
-                    }
-                );
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+                        
+                        const result = await response.json();
+                        return result.user || null;
+                } catch (error) {
+                        console.error('Database check error:', error);
+                        // Fallback to localStorage
+                        const storedUser = localStorage.getItem('user');
+                        return storedUser ? JSON.parse(storedUser) : null;
                 }
-                
-                const result = await response.json();
-                console.log('User check result:', result);
-                return result[0] || null;
-            } catch (error) {
-                console.error('Neon Database check error:', error);
-                // Fallback to localStorage
-                const storedUser = localStorage.getItem('user');
-                return storedUser ? JSON.parse(storedUser) : null;
-            }
         }
-
         // ===== DOM ELEMENTS =====
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
