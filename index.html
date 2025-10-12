@@ -911,27 +911,59 @@
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        function handleFileUpload() {
-            // Simulate upload process
-            uploadBtn.disabled = true;
-            uploadBtn.textContent = 'Uploading...';
-            
-            setTimeout(() => {
-                uploadStatus.textContent = 'Thank you for using our app! Your file has been uploaded successfully.';
-                uploadStatus.className = 'upload-status success';
-                uploadStatus.style.display = 'block';
-                
-                uploadBtn.textContent = 'Upload Complete';
-                
-                // Reset after 5 seconds
-                setTimeout(() => {
-                    uploadBtn.disabled = true;
-                    uploadBtn.textContent = 'Upload File';
-                    fileInput.value = '';
-                    fileInfo.style.display = 'none';
-                    uploadStatus.style.display = 'none';
-                }, 5000);
-            }, 2000);
+        async function handleFileUpload() {
+                const file = fileInput.files[0];
+                if (!file) return;
+
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Uploading...';
+
+                try {
+                        const formData = new FormData();
+                        formData.append('file', file);
+                        formData.append('userId', currentUser.id); // Make sure currentUser has id
+
+                        const response = await fetch('/api/upload', {
+                                method: 'POST',
+                                body: formData
+                        });
+
+                        if (!response.ok) {
+                                const errorData = await response.json();
+                                throw new Error(errorData.error || 'Upload failed');
+                        }
+
+                        const result = await response.json();
+                        
+                        uploadStatus.textContent = `File "${result.fileName}" uploaded successfully!`;
+                        uploadStatus.className = 'upload-status success';
+                        uploadStatus.style.display = 'block';
+                        
+                        // Update file info display with actual storage info
+                        fileName.textContent = result.fileName;
+                        fileType.textContent = file.type || 'Unknown';
+                        fileSize.textContent = formatFileSize(file.size);
+                        uploadDate.textContent = new Date().toLocaleString();
+                        
+                        // Add download link
+                        const downloadLink = document.createElement('a');
+                        downloadLink.href = result.downloadUrl;
+                        downloadLink.textContent = 'Download File';
+                        downloadLink.target = '_blank';
+                        downloadLink.style.display = 'block';
+                        downloadLink.style.marginTop = '10px';
+                        
+                        fileInfo.appendChild(downloadLink);
+                        
+                        uploadBtn.textContent = 'Upload Complete';
+
+                } catch (error) {
+                        console.error('Upload error:', error);
+                        uploadStatus.textContent = `Upload failed: ${error.message}`;
+                        uploadStatus.className = 'upload-status error';
+                        uploadStatus.style.display = 'block';
+                        uploadBtn.textContent = 'Upload Failed';
+                }
         }
 
         // ===== CHECK IF USER IS ALREADY LOGGED IN =====
