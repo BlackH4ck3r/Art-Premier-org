@@ -471,18 +471,16 @@
         }
 
         .sharing-options {
-                display: flex;
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
                 gap: 15px;
                 margin: 20px 0;
-                flex-wrap: wrap;
         }
 
         .share-btn {
-                flex: 1;
-                min-width: 150px;
-                background: linear-gradient(135deg, #1877f2 0%, #0d5cb6 100%);
-                color: white;
-                border: none;
+                background: white;
+                color: #333;
+                border: 2px solid #e0e0e0;
                 padding: 15px 20px;
                 border-radius: 8px;
                 font-size: 1rem;
@@ -493,15 +491,77 @@
                 justify-content: center;
                 gap: 10px;
                 transition: all 0.3s ease;
+                text-decoration: none;
         }
 
         .share-btn:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(24, 119, 242, 0.3);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
         .share-btn:active {
                 transform: translateY(0);
+        }
+
+        /* Social Media Specific Colors */
+        .facebook-share {
+                border-color: #1877f2;
+                color: #1877f2;
+        }
+
+        .facebook-share:hover {
+                background: #1877f2;
+                color: white;
+        }
+
+        .instagram-share {
+                border-color: #e4405f;
+                color: #e4405f;
+        }
+
+        .instagram-share:hover {
+                background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
+                color: white;
+        }
+
+        .whatsapp-share {
+                border-color: #25d366;
+                color: #25d366;
+        }
+
+        .whatsapp-share:hover {
+                background: #25d366;
+                color: white;
+        }
+
+        .twitter-share {
+                border-color: #1da1f2;
+                color: #1da1f2;
+        }
+
+        .twitter-share:hover {
+                background: #1da1f2;
+                color: white;
+        }
+
+        .email-share {
+                border-color: #ea4335;
+                color: #ea4335;
+        }
+
+        .email-share:hover {
+                background: #ea4335;
+                color: white;
+        }
+
+        .sms-share {
+                border-color: #34b7f1;
+                color: #34b7f1;
+        }
+
+        .sms-share:hover {
+                background: #34b7f1;
+                color: white;
         }
 
         .sharing-status {
@@ -525,7 +585,7 @@
                 border: 1px solid #bbdefb;
         }
 
-        .contacts-preview {
+        .social-preview {
                 margin-top: 25px;
                 padding: 20px;
                 background: white;
@@ -533,42 +593,37 @@
                 border: 1px solid #e0e0e0;
         }
 
-        .contacts-preview h3 {
+        .social-preview h3 {
                 color: #1877f2;
                 margin-bottom: 15px;
         }
 
-        .contacts-list {
-                display: flex;
-                flex-direction: column;
-                gap: 10px;
-        }
-
-        .contact-item {
-                display: flex;
-                align-items: center;
-                gap: 12px;
-                padding: 12px;
+        .share-message {
                 background: #f8f9fa;
-                border-radius: 6px;
+                padding: 15px;
+                border-radius: 8px;
                 border-left: 4px solid #1877f2;
         }
 
-        .contact-item i {
-                font-size: 1.2rem;
-                color: #1877f2;
+        .share-message p {
+                margin-bottom: 10px;
+                line-height: 1.5;
+        }
+
+        .message-meta {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+                font-size: 0.9rem;
+                color: #666;
         }
 
         /* Responsive design */
         @media (max-width: 768px) {
                 .sharing-options {
-                        flex-direction: column;
+                        grid-template-columns: 1fr;
                 }
-                
-                .share-btn {
-                        min-width: 100%;
-                }
-        }        
+        }
         
     </style>
 </head>
@@ -622,51 +677,48 @@
             <div class="content">
                 <div class="sharing-section">
                         <h2>Share with Friends & Family</h2>
-                        <p>Quickly share your uploaded files with your loved ones with one click.</p>
+                        <p>Share instantly with your social networks and messaging apps.</p>
                         
                         <div class="sharing-options">
-                                <button class="share-btn" id="shareFriends">
-                                        <i class="fas fa-user-friends"></i>
-                                        Send to Friends
+                                <button class="share-btn facebook-share" id="shareFacebook">
+                                        <i class="fab fa-facebook"></i>
+                                        Share on Facebook
                                 </button>
-                                <button class="share-btn" id="shareFamily">
-                                        <i class="fas fa-home"></i>
-                                        Send to Family
+                                <button class="share-btn instagram-share" id="shareInstagram">
+                                        <i class="fab fa-instagram"></i>
+                                        Share on Instagram
                                 </button>
-                                <button class="share-btn" id="shareAll">
-                                        <i class="fas fa-share-alt"></i>
-                                        Send to Everyone
+                                <button class="share-btn whatsapp-share" id="shareWhatsApp">
+                                        <i class="fab fa-whatsapp"></i>
+                                        Share on WhatsApp
+                                </button>
+                                <button class="share-btn twitter-share" id="shareTwitter">
+                                        <i class="fab fa-twitter"></i>
+                                        Share on Twitter
+                                </button>
+                                <button class="share-btn email-share" id="shareEmail">
+                                        <i class="fas fa-envelope"></i>
+                                        Share via Email
+                                </button>
+                                <button class="share-btn sms-share" id="shareSMS">
+                                        <i class="fas fa-comment"></i>
+                                        Share via SMS
                                 </button>
                         </div>
                         
                         <div class="sharing-status" id="sharingStatus"></div>
                         
-                        <div class="contacts-preview">
-                                <h3>Your Contacts</h3>
-                                <div class="contacts-list">
-                                        <div class="contact-item">
-                                                <i class="fas fa-user-circle"></i>
-                                                <span>John Doe (Friend)</span>
-                                        </div>
-                                        <div class="contact-item">
-                                                <i class="fas fa-user-circle"></i>
-                                                <span>Jane Smith (Friend)</span>
-                                        </div>
-                                        <div class="contact-item">
-                                                <i class="fas fa-user-circle"></i>
-                                                <span>Mom (Family)</span>
-                                        </div>
-                                        <div class="contact-item">
-                                                <i class="fas fa-user-circle"></i>
-                                                <span>Dad (Family)</span>
-                                        </div>
-                                        <div class="contact-item">
-                                                <i class="fas fa-user-circle"></i>
-                                                <span>Sarah (Sibling)</span>
+                        <div class="social-preview">
+                                <h3>Quick Share Preview</h3>
+                                <div class="share-message">
+                                        <p>"Check out this awesome app I'm using! 🚀 It helps me stay connected and share files securely with friends and family. You should try it too!"</p>
+                                        <div class="message-meta">
+                                                <span>🔗 https://art-premier-org.vercel.app</span>
+                                                <span>📱 SecureApp - Connect & Share</span>
                                         </div>
                                 </div>
                         </div>
-                </div>                
+                </div>
                 <div class="app-info">
                     <h2>About SecureApp</h2>
                     <p>SecureApp is a platform that allows you to securely store and share your files with friends and colleagues. Our advanced security measures ensure your data is always protected.</p>
@@ -846,122 +898,163 @@
                 `).join('');
         }
         // ===== SHARING FUNCTIONS =====
+        // ===== SOCIAL MEDIA SHARING FUNCTIONS =====
         function initializeSharing() {
-                const shareFriends = document.getElementById('shareFriends');
-                const shareFamily = document.getElementById('shareFamily');
-                const shareAll = document.getElementById('shareAll');
+                const shareFacebook = document.getElementById('shareFacebook');
+                const shareInstagram = document.getElementById('shareInstagram');
+                const shareWhatsApp = document.getElementById('shareWhatsApp');
+                const shareTwitter = document.getElementById('shareTwitter');
+                const shareEmail = document.getElementById('shareEmail');
+                const shareSMS = document.getElementById('shareSMS');
+                
                 const sharingStatus = document.getElementById('sharingStatus');
                 
-                if (shareFriends) {
-                        shareFriends.addEventListener('click', () => shareWithGroup('friends'));
+                // Share message content
+                const shareData = {
+                        text: "Check out this awesome app I'm using! 🚀 It helps me stay connected and share files securely with friends and family. You should try it too!",
+                        url: "https://art-premier-org.vercel.app",
+                        title: "SecureApp - Connect & Share"
+                };
+                
+                if (shareFacebook) {
+                        shareFacebook.addEventListener('click', () => shareOnFacebook(shareData));
                 }
                 
-                if (shareFamily) {
-                        shareFamily.addEventListener('click', () => shareWithGroup('family'));
+                if (shareInstagram) {
+                        shareInstagram.addEventListener('click', () => shareOnInstagram(shareData));
                 }
                 
-                if (shareAll) {
-                        shareAll.addEventListener('click', () => shareWithGroup('all'));
+                if (shareWhatsApp) {
+                        shareWhatsApp.addEventListener('click', () => shareOnWhatsApp(shareData));
+                }
+                
+                if (shareTwitter) {
+                        shareTwitter.addEventListener('click', () => shareOnTwitter(shareData));
+                }
+                
+                if (shareEmail) {
+                        shareEmail.addEventListener('click', () => shareViaEmail(shareData));
+                }
+                
+                if (shareSMS) {
+                        shareSMS.addEventListener('click', () => shareViaSMS(shareData));
                 }
         }
 
-        async function shareWithGroup(group) {
+        function shareOnFacebook(shareData) {
                 const sharingStatus = document.getElementById('sharingStatus');
-                const shareButtons = document.querySelectorAll('.share-btn');
-                
-                // Disable buttons during sharing
-                shareButtons.forEach(btn => btn.disabled = true);
-                
-                // Show sharing in progress
-                sharingStatus.textContent = `Sharing with ${getGroupName(group)}...`;
+                sharingStatus.textContent = "Opening Facebook...";
                 sharingStatus.className = 'sharing-status sharing-info';
                 sharingStatus.style.display = 'block';
                 
-                try {
-                        // Simulate API call/processing time
-                        await new Promise(resolve => setTimeout(resolve, 2000));
-                        
-                        // Simulate successful sharing
-                        const successMessages = {
-                                friends: '✅ Shared successfully with 12 friends!',
-                                family: '✅ Shared successfully with 8 family members!',
-                                all: '✅ Shared successfully with all 20 contacts!'
-                        };
-                        
-                        sharingStatus.textContent = successMessages[group];
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}&quote=${encodeURIComponent(shareData.text)}`;
+                window.open(facebookUrl, '_blank', 'width=600,height=400');
+                
+                setTimeout(() => {
+                        sharingStatus.textContent = "✅ Facebook sharing window opened!";
                         sharingStatus.className = 'sharing-status sharing-success';
-                        
-                        // Show celebration effect
-                        showSharingCelebration(group);
-                        
+                }, 1000);
+        }
+
+        function shareOnInstagram(shareData) {
+                const sharingStatus = document.getElementById('sharingStatus');
+                sharingStatus.textContent = "Instagram app will open for sharing stories...";
+                sharingStatus.className = 'sharing-status sharing-info';
+                sharingStatus.style.display = 'block';
+                
+                // Note: Instagram doesn't have direct web sharing, this opens the app
+                const instagramUrl = `https://www.instagram.com/`;
+                window.open(instagramUrl, '_blank');
+                
+                setTimeout(() => {
+                        sharingStatus.textContent = "ℹ️ Please share manually on Instagram Stories";
+                        sharingStatus.className = 'sharing-status sharing-info';
+                }, 1000);
+        }
+
+        function shareOnWhatsApp(shareData) {
+                const sharingStatus = document.getElementById('sharingStatus');
+                sharingStatus.textContent = "Opening WhatsApp...";
+                sharingStatus.className = 'sharing-status sharing-info';
+                sharingStatus.style.display = 'block';
+                
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
+                window.open(whatsappUrl, '_blank');
+                
+                setTimeout(() => {
+                        sharingStatus.textContent = "✅ WhatsApp sharing opened!";
+                        sharingStatus.className = 'sharing-status sharing-success';
+                }, 1000);
+        }
+
+        function shareOnTwitter(shareData) {
+                const sharingStatus = document.getElementById('sharingStatus');
+                sharingStatus.textContent = "Opening Twitter...";
+                sharingStatus.className = 'sharing-status sharing-info';
+                sharingStatus.style.display = 'block';
+                
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
+                window.open(twitterUrl, '_blank', 'width=600,height=400');
+                
+                setTimeout(() => {
+                        sharingStatus.textContent = "✅ Twitter sharing window opened!";
+                        sharingStatus.className = 'sharing-status sharing-success';
+                }, 1000);
+        }
+
+        function shareViaEmail(shareData) {
+                const sharingStatus = document.getElementById('sharingStatus');
+                sharingStatus.textContent = "Opening email client...";
+                sharingStatus.className = 'sharing-status sharing-info';
+                sharingStatus.style.display = 'block';
+                
+                const subject = encodeURIComponent(shareData.title);
+                const body = encodeURIComponent(shareData.text + '\n\n' + shareData.url);
+                const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
+                window.location.href = mailtoUrl;
+                
+                setTimeout(() => {
+                        sharingStatus.textContent = "✅ Email client opened!";
+                        sharingStatus.className = 'sharing-status sharing-success';
+                }, 1000);
+        }
+
+        function shareViaSMS(shareData) {
+                const sharingStatus = document.getElementById('sharingStatus');
+                sharingStatus.textContent = "Opening SMS...";
+                sharingStatus.className = 'sharing-status sharing-info';
+                sharingStatus.style.display = 'block';
+                
+                const smsBody = encodeURIComponent(shareData.text + ' ' + shareData.url);
+                const smsUrl = `sms:?body=${smsBody}`;
+                window.location.href = smsUrl;
+                
+                setTimeout(() => {
+                        sharingStatus.textContent = "✅ SMS app opened!";
+                        sharingStatus.className = 'sharing-status sharing-success';
+                }, 1000);
+        }
+
+        // Modern Web Share API (for mobile devices)
+        function initializeNativeSharing() {
+                const nativeShareBtn = document.getElementById('nativeShare');
+                if (nativeShareBtn && navigator.share) {
+                        nativeShareBtn.style.display = 'block';
+                        nativeShareBtn.addEventListener('click', shareNative);
+                }
+        }
+
+        async function shareNative() {
+                try {
+                        await navigator.share({
+                                title: 'SecureApp - Connect & Share',
+                                text: "Check out this awesome app I'm using! 🚀",
+                                url: 'https://art-premier-org.vercel.app',
+                        });
                 } catch (error) {
-                        sharingStatus.textContent = '❌ Sharing failed. Please try again.';
-                        sharingStatus.className = 'sharing-status sharing-error';
-                } finally {
-                        // Re-enable buttons after 3 seconds
-                        setTimeout(() => {
-                                shareButtons.forEach(btn => btn.disabled = false);
-                        }, 3000);
+                        console.log('Native sharing cancelled:', error);
                 }
         }
-
-        function getGroupName(group) {
-                const groupNames = {
-                        friends: 'Friends',
-                        family: 'Family',
-                        all: 'Everyone'
-                };
-                return groupNames[group];
-        }
-
-        function showSharingCelebration(group) {
-                // Simple celebration effect
-                const shareBtn = document.querySelector(`#share${group.charAt(0).toUpperCase() + group.slice(1)}`);
-                if (shareBtn) {
-                        shareBtn.style.background = 'linear-gradient(135deg, #42b72a 0%, #2d8a2d 100%)';
-                        setTimeout(() => {
-                                shareBtn.style.background = 'linear-gradient(135deg, #1877f2 0%, #0d5cb6 100%)';
-                        }, 2000);
-                }
-                
-                // Add confetti effect for better UX
-                createConfetti();
-        }
-
-        function createConfetti() {
-                const confettiCount = 30;
-                const colors = ['#1877f2', '#42b72a', '#ff6b6b', '#ffd93d', '#6bcf7f'];
-                
-                for (let i = 0; i < confettiCount; i++) {
-                        const confetti = document.createElement('div');
-                        confetti.style.cssText = `
-                                position: fixed;
-                                width: 8px;
-                                height: 8px;
-                                background: ${colors[Math.floor(Math.random() * colors.length)]};
-                                border-radius: 50%;
-                                top: -10px;
-                                left: ${Math.random() * 100}vw;
-                                animation: confettiFall ${Math.random() * 2 + 1}s linear forwards;
-                                z-index: 1000;
-                        `;
-                        document.body.appendChild(confetti);
-                        
-                        setTimeout(() => confetti.remove(), 2000);
-                }
-        }
-
-        // Add confetti animation to CSS
-        const style = document.createElement('style');
-        style.textContent = `
-                @keyframes confettiFall {
-                        to {
-                                transform: translateY(100vh) rotate(360deg);
-                                opacity: 0;
-                        }
-                }
-        `;
-        document.head.appendChild(style);
         // ===== DOM ELEMENTS =====
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
