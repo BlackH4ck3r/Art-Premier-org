@@ -218,31 +218,13 @@
 
 
 
-
-        .file-input {
-            display: none;
-        }
-
-
-
         .success {
             background-color: #e7f7e7;
             color: #2d8a2d;
             border: 1px solid #c1e6c1;
         }
 
-        .file-info {
-            margin-top: 20px;
-            padding: 15px;
-            background-color: #f0f7ff;
-            border-radius: 8px;
-            display: none;
-        }
 
-        .file-info h3 {
-            color: #1877f2;
-            margin-bottom: 10px;
-        }
 
         .app-info {
             background-color: #f7f8fa;
@@ -451,106 +433,11 @@
         .download-btn:hover {
                 background: #0d5cb6;
         }
-        /* Upload Section Styles */
-        .upload-section {
-                background-color: #f7f8fa;
-                padding: 25px;
-                border-radius: 10px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-                margin-bottom: 30px;
-        }
-
-        .upload-section h2 {
-                color: #1877f2;
-                margin-bottom: 15px;
-        }
-
-        .upload-area {
-                border: 2px dashed #ddd;
-                border-radius: 8px;
-                padding: 40px 20px;
-                text-align: center;
-                cursor: pointer;
-                transition: all 0.3s;
-                margin-bottom: 15px;
-                background: white;
-        }
-
-        .upload-area:hover {
-                border-color: #1877f2;
-                background-color: #f0f7ff;
-        }
-
-        .upload-area i {
-                font-size: 3rem;
-                color: #1877f2;
-                margin-bottom: 15px;
-        }
-
-        .upload-area h3 {
-                margin-bottom: 10px;
-                color: #333;
-        }
-
-        .file-input {
-                display: none;
-        }
-
-        .upload-btn {
-                background-color: #1877f2;
-                color: white;
-                border: none;
-                padding: 12px 25px;
-                border-radius: 6px;
-                font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                transition: all 0.3s;
-                width: 100%;
-        }
-
-        .upload-btn:hover:not(:disabled) {
-                background-color: #0d5cb6;
-                transform: translateY(-2px);
-        }
-
-        .upload-btn:disabled {
-                background-color: #cccccc;
-                cursor: not-allowed;
-                transform: none;
-        }
-
-        .upload-status {
-                margin-top: 15px;
-                padding: 10px;
-                border-radius: 6px;
-                text-align: center;
-                font-weight: 500;
-        }
 
         .success {
                 background-color: #e7f7e7;
                 color: #2d8a2d;
                 border: 1px solid #c1e6c1;
-        }
-
-        .error {
-                background-color: #fde8e8;
-                color: #c53030;
-                border: 1px solid #f5c6c6;
-        }
-
-        .file-info {
-                margin-top: 20px;
-                padding: 15px;
-                background-color: #f0f7ff;
-                border-radius: 8px;
-                border-left: 4px solid #1877f2;
-        }
-
-        .file-info h3 {
-                color: #1877f2;
-                margin-bottom: 10px;
         }
 
         /* Sharing Section Styles */
@@ -682,6 +569,152 @@
                 color: #1565c0;
                 border: 1px solid #bbdefb;
         }
+        /* Music Player Styles */
+        .music-player-section {
+                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                padding: 25px;
+                border-radius: 15px;
+                margin: 30px 0;
+                color: white;
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .music-player-section h2 {
+                margin-bottom: 20px;
+                text-align: center;
+                font-size: 1.5rem;
+        }
+
+        .music-player {
+                background: rgba(255, 255, 255, 0.1);
+                backdrop-filter: blur(10px);
+                padding: 20px;
+                border-radius: 12px;
+                border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .music-info {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 10px;
+                margin-bottom: 20px;
+                font-size: 1.1rem;
+        }
+
+        .music-info i {
+                font-size: 1.3rem;
+                color: #ffd93d;
+        }
+
+        .music-controls {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                gap: 15px;
+                margin-bottom: 20px;
+                flex-wrap: wrap;
+        }
+
+        .music-btn {
+                background: rgba(255, 255, 255, 0.2);
+                border: 2px solid rgba(255, 255, 255, 0.3);
+                color: white;
+                width: 50px;
+                height: 50px;
+                border-radius: 50%;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                transition: all 0.3s ease;
+                font-size: 1.2rem;
+        }
+
+        .music-btn:hover {
+                background: rgba(255, 255, 255, 0.3);
+                transform: scale(1.1);
+                border-color: #ffd93d;
+        }
+
+        .music-btn:active {
+                transform: scale(0.95);
+        }
+
+        .volume-control {
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                background: rgba(255, 255, 255, 0.1);
+                padding: 8px 15px;
+                border-radius: 25px;
+        }
+
+        .volume-control i {
+                color: #ffd93d;
+        }
+
+        #volumeSlider {
+                width: 80px;
+                height: 5px;
+                border-radius: 5px;
+                background: rgba(255, 255, 255, 0.3);
+                outline: none;
+                -webkit-appearance: none;
+        }
+
+        #volumeSlider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                width: 15px;
+                height: 15px;
+                border-radius: 50%;
+                background: #ffd93d;
+                cursor: pointer;
+        }
+
+        .music-progress {
+                display: flex;
+                align-items: center;
+                gap: 15px;
+                font-size: 0.9rem;
+        }
+
+        .progress-bar {
+                flex: 1;
+                height: 6px;
+                background: rgba(255, 255, 255, 0.3);
+                border-radius: 3px;
+                overflow: hidden;
+        }
+
+        .progress {
+                height: 100%;
+                background: #ffd93d;
+                width: 0%;
+                transition: width 0.1s ease;
+                border-radius: 3px;
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+                .music-controls {
+                        gap: 10px;
+                }
+                
+                .music-btn {
+                        width: 45px;
+                        height: 45px;
+                        font-size: 1rem;
+                }
+                
+                .volume-control {
+                        padding: 6px 12px;
+                }
+                
+                #volumeSlider {
+                        width: 60px;
+                }
+        }        
 
         .social-preview {
                 margin-top: 25px;
@@ -761,7 +794,8 @@
                 </div>
             </div>
         </div>
-        
+                <!-- Music Player Section -->
+
         <!-- Home Page -->
         <div class="home-container" id="homePage">
             <div class="header">
@@ -773,42 +807,51 @@
                 </div>
             </div>
             <div class="content">
-                <div class="upload-section">
-                    <h2>Upload Your File</h2>
-                        <p>Select a file to upload. Supported formats: MP3, MP4, JPG, PDF</p>
-        
-                    <div class="upload-area" id="uploadArea">
-                        <i class="fas fa-cloud-upload-alt"></i>
-                        <h3>Drag & Drop your file here</h3>
-                        <p>or click to browse</p>
-                        <input type="file" id="fileInput" class="file-input" accept=".mp3,.mp4,.jpg,.jpeg,.pdf">
-                    </div>
-        
-                    <button class="upload-btn" id="uploadBtn" disabled>Upload File</button>
-        
-                    <div class="upload-status" id="uploadStatus"></div>
-        
-                    <div class="file-info" id="fileInfo">
-                        <h3>File Information</h3>
-                        <p><strong>File Name:</strong> <span id="fileName">-</span></p>
-                        <p><strong>File Type:</strong> <span id="fileType">-</span></p>
-                        <p><strong>File Size:</strong> <span id="fileSize">-</span></p>
-                        <p><strong>Upload Date:</strong> <span id="uploadDate">-</span></p>
-                    </div>
-                </div>
-                
+                <!-- Music Player Section -->
+                <div class="music-player-section">
+                        <h2>🎵 Background Music</h2>
+                        <div class="music-player">
+                                <div class="music-info">
+                                        <i class="fas fa-music"></i>
+                                        <span id="songTitle">Enjoy the vibes...</span>
+                                </div>
+                                <div class="music-controls">
+                                        <button class="music-btn" id="playBtn">
+                                                <i class="fas fa-play"></i>
+                                        </button>
+                                        <button class="music-btn" id="pauseBtn">
+                                                <i class="fas fa-pause"></i>
+                                        </button>
+                                        <button class="music-btn" id="stopBtn">
+                                                <i class="fas fa-stop"></i>
+                                        </button>
+                                        <div class="volume-control">
+                                                <i class="fas fa-volume-up"></i>
+                                                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+                                        </div>
+                                </div>
+                                <div class="music-progress">
+                                        <div class="progress-bar">
+                                                <div class="progress" id="musicProgress"></div>
+                                        </div>
+                                        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                                </div>
+                        </div>
+                        <audio id="backgroundMusic" loop>
+                                <source src="/music/background-music.mp3" type="audio/mpeg">
+                                Your browser does not support the audio element.
+                        </audio>
+                </div>                
+
+                <!-- Sharing Section -->
                 <div class="sharing-section">
-                        <h2>Share with Friends & Family</h2>
-                        <p>Share instantly with your social networks and messaging apps.</p>
+                        <h2>Share This Amazing App! 🚀</h2>
+                        <p>Spread the word about SecureApp - the perfect platform for secure connections and file management.</p>
                         
                         <div class="sharing-options">
                                 <button class="share-btn facebook-share" id="shareFacebook">
                                         <i class="fab fa-facebook"></i>
                                         Share on Facebook
-                                </button>
-                                <button class="share-btn instagram-share" id="shareInstagram">
-                                        <i class="fab fa-instagram"></i>
-                                        Share on Instagram
                                 </button>
                                 <button class="share-btn whatsapp-share" id="shareWhatsApp">
                                         <i class="fab fa-whatsapp"></i>
@@ -822,52 +865,19 @@
                                         <i class="fas fa-envelope"></i>
                                         Share via Email
                                 </button>
-                                <button class="share-btn sms-share" id="shareSMS">
-                                        <i class="fas fa-comment"></i>
-                                        Share via SMS
-                                </button>
                         </div>
                         
-                        <div class="sharing-status" id="sharingStatus"></div>
-                        
                         <div class="social-preview">
-                                <h3>Quick Share Preview</h3>
+                                <h3>What you're sharing:</h3>
                                 <div class="share-message">
-                                        <p>"Check out this awesome app I'm using! 🚀 It helps me stay connected and share files securely with friends and family. You should try it too!"</p>
+                                        <p>"Hey! Check out SecureApp - an amazing platform I discovered! 🚀 It's perfect for secure file sharing and staying connected with friends and family. The interface is beautiful and it's super easy to use!"</p>
                                         <div class="message-meta">
-                                                <span>🔗 https://art-premier-org.vercel.app</span>
-                                                <span>📱 SecureApp - Connect & Share</span>
+                                                <span>🔗 <strong>https://art-premier-org.vercel.app</strong></span>
+                                                <span>📱 <strong>SecureApp - Connect & Share Securely</strong></span>
                                         </div>
                                 </div>
                         </div>
-                </div>
-                <div class="app-info">
-                    <h2>About SecureApp</h2>
-                    <p>SecureApp is a platform that allows you to securely store and share your files with friends and colleagues. Our advanced security measures ensure your data is always protected.</p>
-                    <p>With support for multiple file types and a user-friendly interface, SecureApp makes file management simple and efficient.</p>
-                    
-                    <div class="features">
-                        <div class="feature">
-                            <i class="fas fa-shield-alt"></i>
-                            <h3>Secure</h3>
-                            <p>Your data is protected with industry-leading security measures.</p>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-bolt"></i>
-                            <h3>Fast</h3>
-                            <p>Upload and access your files quickly from anywhere.</p>
-                        </div>
-                        <div class="feature">
-                            <i class="fas fa-users"></i>
-                            <h3>Social</h3>
-                            <p>Connect with friends and share files seamlessly.</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
+                </div>          
     <!-- Facebook Login Modal -->
     <div class="modal" id="facebookModal">
         <div class="modal-content">
@@ -1020,138 +1030,191 @@
                 `).join('');
         }
         // ===== SHARING FUNCTIONS =====
-        // ===== UPLOAD FUNCTIONALITY =====
-        let currentFile = null;
-
-        function initializeUpload() {
-                const uploadArea = document.getElementById('uploadArea');
-                const fileInput = document.getElementById('fileInput');
-                const uploadBtn = document.getElementById('uploadBtn');
+        function initializeSharing() {
+                console.log('Initializing sharing buttons...');
                 
-                if (uploadArea && fileInput) {
-                        uploadArea.addEventListener('click', () => {
-                                fileInput.click();
+                const shareFacebook = document.getElementById('shareFacebook');
+                const shareWhatsApp = document.getElementById('shareWhatsApp');
+                const shareTwitter = document.getElementById('shareTwitter');
+                const shareEmail = document.getElementById('shareEmail');
+                
+                if (shareFacebook) {
+                        shareFacebook.addEventListener('click', shareOnFacebook);
+                }
+                if (shareWhatsApp) {
+                        shareWhatsApp.addEventListener('click', shareOnWhatsApp);
+                }
+                if (shareTwitter) {
+                        shareTwitter.addEventListener('click', shareOnTwitter);
+                }
+                if (shareEmail) {
+                        shareEmail.addEventListener('click', shareViaEmail);
+                }
+        }
+
+        function shareOnFacebook() {
+                const text = `Check out SecureApp - an amazing platform for secure file sharing and connections! 🚀 Beautiful interface and super easy to use.`;
+                const url = "https://art-premier-org.vercel.app";
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
+                
+                const newWindow = window.open(facebookUrl, '_blank', 'width=600,height=400');
+                if (!newWindow || newWindow.closed) {
+                        window.location.href = facebookUrl;
+                }
+        }
+
+        function shareOnWhatsApp() {
+                const text = `Check out SecureApp! 🚀 An amazing platform for secure file sharing and connections. Beautiful interface and super easy to use. Try it here: https://art-premier-org.vercel.app`;
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+                
+                const newWindow = window.open(whatsappUrl, '_blank');
+                if (!newWindow || newWindow.closed) {
+                        window.location.href = whatsappUrl;
+                }
+        }
+
+        function shareOnTwitter() {
+                const text = `Check out SecureApp - amazing platform for secure file sharing and connections! 🚀`;
+                const url = "https://art-premier-org.vercel.app";
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+                
+                const newWindow = window.open(twitterUrl, '_blank', 'width=600,height=400');
+                if (!newWindow || newWindow.closed) {
+                        window.location.href = twitterUrl;
+                }
+        }
+
+        function shareViaEmail() {
+                const subject = `Check out SecureApp - Amazing File Sharing Platform`;
+                const body = `Hello!
+
+        I wanted to share this awesome app I discovered called SecureApp! 🚀
+
+        It's a beautiful, secure platform for:
+        • Secure file management and sharing
+        • Easy connections with friends and family
+        • Beautiful user interface
+        • Fast and reliable
+
+        The interface is stunning and it's super easy to use. I think you'd love it!
+
+        Check it out here: https://art-premier-org.vercel.app
+
+        Best regards!`;
+                const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+                window.location.href = mailtoUrl;
+        }
+
+        // Initialize sharing when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+                initializeSharing();
+        });
+        // ===== MUSIC PLAYER FUNCTIONALITY =====
+        function initializeMusicPlayer() {
+                const audio = document.getElementById('backgroundMusic');
+                const playBtn = document.getElementById('playBtn');
+                const pauseBtn = document.getElementById('pauseBtn');
+                const stopBtn = document.getElementById('stopBtn');
+                const volumeSlider = document.getElementById('volumeSlider');
+                const musicProgress = document.getElementById('musicProgress');
+                const currentTime = document.getElementById('currentTime');
+                const duration = document.getElementById('duration');
+                const songTitle = document.getElementById('songTitle');
+
+                // Set initial volume
+                audio.volume = 0.5;
+
+                // Play button
+                playBtn.addEventListener('click', () => {
+                        audio.play().catch(error => {
+                                console.log('Audio play failed:', error);
+                                // Show user-friendly message
+                                songTitle.textContent = "Click play to start music";
+                        });
+                        updateSongTitle("Now playing: Chill Vibes 🎶");
+                });
+
+                // Pause button
+                pauseBtn.addEventListener('click', () => {
+                        audio.pause();
+                        updateSongTitle("Music paused ⏸️");
+                });
+
+                // Stop button
+                stopBtn.addEventListener('click', () => {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        updateSongTitle("Music stopped ⏹️");
+                });
+
+                // Volume control
+                volumeSlider.addEventListener('input', () => {
+                        audio.volume = volumeSlider.value;
+                });
+
+                // Update progress bar
+                audio.addEventListener('timeupdate', () => {
+                        if (audio.duration) {
+                                const progressPercent = (audio.currentTime / audio.duration) * 100;
+                                musicProgress.style.width = `${progressPercent}%`;
+                                
+                                // Update time displays
+                                currentTime.textContent = formatTime(audio.currentTime);
+                                duration.textContent = formatTime(audio.duration);
+                        }
+                });
+
+                // Click on progress bar to seek
+                const progressBar = document.querySelector('.progress-bar');
+                progressBar.addEventListener('click', (e) => {
+                        const rect = progressBar.getBoundingClientRect();
+                        const percent = (e.clientX - rect.left) / rect.width;
+                        audio.currentTime = percent * audio.duration;
+                });
+
+                // Auto-play when page loads (with user interaction requirement)
+                document.addEventListener('click', function initAutoPlay() {
+                        // Try to play music on first user interaction
+                        audio.play().then(() => {
+                                updateSongTitle("Now playing: Chill Vibes 🎶");
+                        }).catch(error => {
+                                console.log('Auto-play prevented:', error);
+                                updateSongTitle("Click play to start music ▶️");
                         });
                         
-                        fileInput.addEventListener('change', handleFileSelect);
-                        uploadBtn.addEventListener('click', handleFileUpload);
-                }
+                        // Remove this listener after first interaction
+                        document.removeEventListener('click', initAutoPlay);
+                });
+
+                // Handle audio errors
+                audio.addEventListener('error', (e) => {
+                        console.error('Audio error:', e);
+                        updateSongTitle("Music file not found ❌");
+                });
+
+                // Update song title when metadata is loaded
+                audio.addEventListener('loadedmetadata', () => {
+                        updateSongTitle("Ready to play: Chill Vibes 🎵");
+                });
         }
-        function handleFileSelect(event) {
-                const file = event.target.files[0];
-                const uploadBtn = document.getElementById('uploadBtn');
-                const uploadStatus = document.getElementById('uploadStatus');
-                
-                if (file) {
-                        // Check file type
-                        const fileExtension = file.name.split('.').pop().toLowerCase();
-                        const allowedExtensions = ['mp3', 'mp4', 'jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
-                        
-                        if (!allowedExtensions.includes(fileExtension)) {
-                                uploadStatus.textContent = 'Error: File type not supported. Please select MP3, MP4, JPG, PNG, PDF, or DOC files.';
-                                uploadStatus.className = 'upload-status error';
-                                uploadStatus.style.display = 'block';
-                                uploadBtn.disabled = true;
-                                return;
-                        }
-                        
-                        // Store the file globally
-                        currentFile = file;
-                        console.log('File selected and stored:', currentFile.name);
-                        
-                        // Enable upload button
-                        uploadBtn.disabled = false;
-                        
-                        // Display file info
-                        displayFileInfo(file);
-                        
-                        uploadStatus.textContent = 'File selected. Click "Upload File" to proceed.';
-                        uploadStatus.className = 'upload-status';
-                        uploadStatus.style.display = 'block';
+
+        function formatTime(seconds) {
+                const mins = Math.floor(seconds / 60);
+                const secs = Math.floor(seconds % 60);
+                return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function updateSongTitle(text) {
+                const songTitle = document.getElementById('songTitle');
+                if (songTitle) {
+                        songTitle.textContent = text;
                 }
         }
 
-
-        function displayFileInfo(file) {
-                const fileInfo = document.getElementById('fileInfo');
-                const fileName = document.getElementById('fileName');
-                const fileType = document.getElementById('fileType');
-                const fileSize = document.getElementById('fileSize');
-                const uploadDate = document.getElementById('uploadDate');
-                
-                if (fileName) fileName.textContent = file.name;
-                if (fileType) fileType.textContent = file.type || 'Unknown';
-                if (fileSize) fileSize.textContent = formatFileSize(file.size);
-                if (uploadDate) uploadDate.textContent = new Date().toLocaleString();
-                if (fileInfo) fileInfo.style.display = 'block';
-        }
-
-        function formatFileSize(bytes) {
-                if (bytes === 0) return '0 Bytes';
-                const k = 1024;
-                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-                const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-        }
-
-        async function handleFileUpload() {
-                const uploadBtn = document.getElementById('uploadBtn');
-                const uploadStatus = document.getElementById('uploadStatus');
-                
-                // Double check if we have a file
-                if (!currentFile) {
-                        const fileInput = document.getElementById('fileInput');
-                        if (fileInput.files[0]) {
-                                currentFile = fileInput.files[0];
-                                console.log('Recovered file from input:', currentFile.name);
-                        } else {
-                                alert('Please select a file first!');
-                                return;
-                        }
-                }
-                
-                console.log('Starting upload for file:', currentFile.name);
-                
-                uploadBtn.disabled = true;
-                uploadBtn.textContent = 'Uploading...';
-
-                try {
-                        // SIMULATED UPLOAD - NO API CALLS
-                        await new Promise(resolve => setTimeout(resolve, 1500));
-                        
-                        console.log('Upload simulation complete. Current file:', currentFile.name);
-                        
-                        // Show success message
-                        uploadStatus.innerHTML = `
-                                <strong>Success!</strong> File "${currentFile.name}" uploaded successfully.<br>
-                                <em>Sharing buttons are now enabled!</em>
-                        `;
-                        uploadStatus.className = 'upload-status success';
-                        uploadStatus.style.display = 'block';
-                        
-                        uploadBtn.textContent = 'Upload Complete';
-
-                        // Enable sharing buttons
-                        enableSharingButtons();
-                        
-                        // Update sharing preview
-                        updateSharingPreview(currentFile);
-
-                } catch (error) {
-                        console.error('Upload error:', error);
-                        uploadStatus.textContent = `Upload failed: ${error.message}`;
-                        uploadStatus.className = 'upload-status error';
-                        uploadStatus.style.display = 'block';
-                        uploadBtn.textContent = 'Upload Failed';
-                        
-                        // Re-enable button after error
-                        setTimeout(() => {
-                                uploadBtn.disabled = false;
-                                uploadBtn.textContent = 'Upload File';
-                        }, 3000);
-                }
-        }
-
+        // Initialize music player when DOM loads
+        document.addEventListener('DOMContentLoaded', function() {
+                initializeMusicPlayer();
+        });
         // ===== SHARING FUNCTIONALITY =====
         function enableSharingButtons() {
                 console.log('Enabling sharing buttons...');
@@ -1302,10 +1365,7 @@
                 }, 100);
         }
         // ===== DOM ELEMENTS =====
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const uploadStatus = document.getElementById('uploadStatus');
+
         // ... and other existing elements
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
@@ -1315,11 +1375,7 @@
         const emailForm = document.getElementById('emailForm');
         const loginSubmit = document.getElementById('loginSubmit');
         const logoutBtn = document.getElementById('logoutBtn');
-        const fileInfo = document.getElementById('fileInfo');
-        const fileName = document.getElementById('fileName');
-        const fileType = document.getElementById('fileType');
-        const fileSize = document.getElementById('fileSize');
-        const uploadDate = document.getElementById('uploadDate');
+;
         const userAvatar = document.getElementById('userAvatar');
         const userName = document.getElementById('userName');
 
@@ -1433,10 +1489,7 @@
                 
                 loginPage.style.display = 'none';
                 homePage.style.display = 'flex';
-                setTimeout(() => {
-                    initializeUpload();
-                    initializeSharing();
-                }, 100);
+                initializeHomePage();
                 
             } catch (error) {
                 alert('Login failed. Please try again.');
@@ -1468,10 +1521,7 @@
             // Show loading state
             form.style.display = 'none';
             loading.style.display = 'flex';
-            setTimeout(() => {
-                initializeUpload();
-                initializeSharing();
-            }, 100);
+            initializeHomePage();
             
             try {
                 // Check if user exists
@@ -1612,6 +1662,20 @@
                 }
         }
         // ===== CHECK IF USER IS ALREADY LOGGED IN =====
+        // ===== INITIALIZE EVERYTHING =====
+        document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded - initializing app...');
+                initializeSharing();
+                initializeMusicPlayer();
+        });
+
+        // Also initialize when user logs in
+        function initializeHomePage() {
+                setTimeout(() => {
+                        initializeSharing();
+                        initializeMusicPlayer();
+                }, 100);
+        }
         window.addEventListener('DOMContentLoaded', async () => {
             try {
                 // Try to get user from localStorage as fallback
