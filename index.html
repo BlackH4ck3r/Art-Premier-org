@@ -1025,7 +1025,17 @@
 
         async function handleFileUpload() {
                 const file = fileInput.files[0];
-                if (!file) return;
+                if (!file) {
+                        alert('Please select a file first');
+                        return;
+                }
+
+                // Get user ID - try multiple sources
+                let userId = currentUser?.id || localStorage.getItem('currentUserId');
+                if (!userId) {
+                        alert('Please login first');
+                        return;
+                }
 
                 uploadBtn.disabled = true;
                 uploadBtn.textContent = 'Uploading...';
@@ -1033,41 +1043,45 @@
                 try {
                         const formData = new FormData();
                         formData.append('file', file);
-                        formData.append('userId', currentUser.id); // Make sure currentUser has id
+                        formData.append('userId', userId);
 
+                        console.log('Uploading file:', file.name, 'for user:', userId);
+                        
                         const response = await fetch('/api/upload', {
                                 method: 'POST',
                                 body: formData
                         });
 
-                        if (!response.ok) {
-                                const errorData = await response.json();
-                                throw new Error(errorData.error || 'Upload failed');
+                        // Check if response is JSON
+                        const contentType = response.headers.get('content-type');
+                        if (!contentType || !contentType.includes('application/json')) {
+                                const text = await response.text();
+                                console.error('Non-JSON response:', text.substring(0, 100));
+                                throw new Error('Server returned an error page. Please check if the upload API exists.');
                         }
 
                         const result = await response.json();
                         
-                        uploadStatus.textContent = `File "${result.fileName}" uploaded successfully!`;
+                        if (!response.ok) {
+                                throw new Error(result.error || `Upload failed with status ${response.status}`);
+                        }
+
+                        console.log('Upload successful:', result);
+                        
+                        // Show success message
+                        uploadStatus.innerHTML = `
+                                <strong>Success!</strong> File "${result.fileName}" uploaded successfully.<br>
+                                <a href="${result.downloadUrl}" target="_blank" style="color: #1877f2; text-decoration: underline; margin-top: 10px; display: inline-block;">
+                                        Download File
+                                </a>
+                        `;
                         uploadStatus.className = 'upload-status success';
                         uploadStatus.style.display = 'block';
                         
-                        // Update file info display with actual storage info
-                        fileName.textContent = result.fileName;
-                        fileType.textContent = file.type || 'Unknown';
-                        fileSize.textContent = formatFileSize(file.size);
-                        uploadDate.textContent = new Date().toLocaleString();
-                        
-                        // Add download link
-                        const downloadLink = document.createElement('a');
-                        downloadLink.href = result.downloadUrl;
-                        downloadLink.textContent = 'Download File';
-                        downloadLink.target = '_blank';
-                        downloadLink.style.display = 'block';
-                        downloadLink.style.marginTop = '10px';
-                        
-                        fileInfo.appendChild(downloadLink);
-                        
                         uploadBtn.textContent = 'Upload Complete';
+
+                        // Refresh the files list
+                        displayUserFiles();
 
                 } catch (error) {
                         console.error('Upload error:', error);
@@ -1075,9 +1089,14 @@
                         uploadStatus.className = 'upload-status error';
                         uploadStatus.style.display = 'block';
                         uploadBtn.textContent = 'Upload Failed';
+                        
+                        // Re-enable button after error
+                        setTimeout(() => {
+                                uploadBtn.disabled = false;
+                                uploadBtn.textContent = 'Upload File';
+                        }, 3000);
                 }
         }
-
         // ===== CHECK IF USER IS ALREADY LOGGED IN =====
         window.addEventListener('DOMContentLoaded', async () => {
             try {
