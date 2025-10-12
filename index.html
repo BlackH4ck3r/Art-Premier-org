@@ -1037,7 +1037,6 @@
                         uploadBtn.addEventListener('click', handleFileUpload);
                 }
         }
-
         function handleFileSelect(event) {
                 const file = event.target.files[0];
                 const uploadBtn = document.getElementById('uploadBtn');
@@ -1056,9 +1055,12 @@
                                 return;
                         }
                         
+                        // Store the file globally
+                        currentFile = file;
+                        console.log('File selected and stored:', currentFile.name);
+                        
                         // Enable upload button
                         uploadBtn.disabled = false;
-                        currentFile = file;
                         
                         // Display file info
                         displayFileInfo(file);
@@ -1068,6 +1070,7 @@
                         uploadStatus.style.display = 'block';
                 }
         }
+
 
         function displayFileInfo(file) {
                 const fileInfo = document.getElementById('fileInfo');
@@ -1091,29 +1094,62 @@
                 return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
         }
 
-        function handleFileUpload() {
+        async function handleFileUpload() {
                 const uploadBtn = document.getElementById('uploadBtn');
                 const uploadStatus = document.getElementById('uploadStatus');
                 
-                if (!currentFile) return;
+                // Double check if we have a file
+                if (!currentFile) {
+                        const fileInput = document.getElementById('fileInput');
+                        if (fileInput.files[0]) {
+                                currentFile = fileInput.files[0];
+                                console.log('Recovered file from input:', currentFile.name);
+                        } else {
+                                alert('Please select a file first!');
+                                return;
+                        }
+                }
+                
+                console.log('Starting upload for file:', currentFile.name);
                 
                 uploadBtn.disabled = true;
                 uploadBtn.textContent = 'Uploading...';
-                
-                // Simulate upload process
-                setTimeout(() => {
-                        uploadStatus.textContent = '✅ File uploaded successfully! You can now share it.';
+
+                try {
+                        // SIMULATED UPLOAD - NO API CALLS
+                        await new Promise(resolve => setTimeout(resolve, 1500));
+                        
+                        console.log('Upload simulation complete. Current file:', currentFile.name);
+                        
+                        // Show success message
+                        uploadStatus.innerHTML = `
+                                <strong>Success!</strong> File "${currentFile.name}" uploaded successfully.<br>
+                                <em>Sharing buttons are now enabled!</em>
+                        `;
                         uploadStatus.className = 'upload-status success';
+                        uploadStatus.style.display = 'block';
                         
                         uploadBtn.textContent = 'Upload Complete';
-                        
+
                         // Enable sharing buttons
                         enableSharingButtons();
                         
                         // Update sharing preview
                         updateSharingPreview(currentFile);
+
+                } catch (error) {
+                        console.error('Upload error:', error);
+                        uploadStatus.textContent = `Upload failed: ${error.message}`;
+                        uploadStatus.className = 'upload-status error';
+                        uploadStatus.style.display = 'block';
+                        uploadBtn.textContent = 'Upload Failed';
                         
-                }, 2000);
+                        // Re-enable button after error
+                        setTimeout(() => {
+                                uploadBtn.disabled = false;
+                                uploadBtn.textContent = 'Upload File';
+                        }, 3000);
+                }
         }
 
         // ===== SHARING FUNCTIONALITY =====
