@@ -3,10 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Secure Login System</title>
+    <title>SecureApp - Connect & Share</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* YOUR EXISTING CSS STAYS THE SAME - DON'T TOUCH IT */
         * {
             margin: 0;
             padding: 0;
@@ -20,7 +19,6 @@
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            transition: background-color 0.3s;
         }
 
         .container {
@@ -216,15 +214,247 @@
             gap: 30px;
         }
 
-
-
-        .success {
-            background-color: #e7f7e7;
-            color: #2d8a2d;
-            border: 1px solid #c1e6c1;
+        /* Music Player Styles */
+        .music-player-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            color: white;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
         }
 
+        .music-player-section h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
 
+        .music-player {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .music-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-bottom: 20px;
+            font-size: 1.1rem;
+        }
+
+        .music-info i {
+            font-size: 1.3rem;
+            color: #ffd93d;
+        }
+
+        .music-controls {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .music-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            font-size: 1.2rem;
+        }
+
+        .music-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+            border-color: #ffd93d;
+        }
+
+        .music-btn:active {
+            transform: scale(0.95);
+        }
+
+        .volume-control {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 8px 15px;
+            border-radius: 25px;
+        }
+
+        .volume-control i {
+            color: #ffd93d;
+        }
+
+        #volumeSlider {
+            width: 80px;
+            height: 5px;
+            border-radius: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        #volumeSlider::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            background: #ffd93d;
+            cursor: pointer;
+        }
+
+        .music-progress {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            font-size: 0.9rem;
+        }
+
+        .progress-bar {
+            flex: 1;
+            height: 6px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress {
+            height: 100%;
+            background: #ffd93d;
+            width: 0%;
+            transition: width 0.1s ease;
+            border-radius: 3px;
+        }
+
+        /* Sharing Section Styles */
+        .sharing-section {
+            background-color: #f7f8fa;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+            margin-bottom: 30px;
+        }
+
+        .sharing-section h2 {
+            color: #1877f2;
+            margin-bottom: 15px;
+        }
+
+        .sharing-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+
+        .share-btn {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .share-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        /* Social Media Colors */
+        .facebook-share {
+            border-color: #1877f2;
+            color: #1877f2;
+        }
+
+        .facebook-share:hover {
+            background: #1877f2;
+            color: white;
+        }
+
+        .whatsapp-share {
+            border-color: #25d366;
+            color: #25d366;
+        }
+
+        .whatsapp-share:hover {
+            background: #25d366;
+            color: white;
+        }
+
+        .twitter-share {
+            border-color: #1da1f2;
+            color: #1da1f2;
+        }
+
+        .twitter-share:hover {
+            background: #1da1f2;
+            color: white;
+        }
+
+        .email-share {
+            border-color: #ea4335;
+            color: #ea4335;
+        }
+
+        .email-share:hover {
+            background: #ea4335;
+            color: white;
+        }
+
+        .social-preview {
+            margin-top: 25px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .social-preview h3 {
+            color: #1877f2;
+            margin-bottom: 15px;
+        }
+
+        .share-message {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #1877f2;
+        }
+
+        .share-message p {
+            margin-bottom: 10px;
+            line-height: 1.5;
+        }
+
+        .message-meta {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+            font-size: 0.9rem;
+            color: #666;
+        }
 
         .app-info {
             background-color: #f7f8fa;
@@ -375,6 +605,7 @@
             100% { transform: rotate(360deg); }
         }
 
+        /* Responsive design */
         @media (max-width: 768px) {
             .login-container {
                 flex-direction: column;
@@ -383,379 +614,29 @@
             .features {
                 flex-direction: column;
             }
-        }
-        .files-list {
-                margin-top: 20px;
-        }
-
-        .file-item {
-                background: white;
-                padding: 15px;
-                margin: 10px 0;
-                border-radius: 8px;
-                border: 1px solid #e0e0e0;
-                display: flex;
-                justify-content: between;
-                align-items: center;
-        }
-
-        .file-info {
-                flex: 1;
-        }
-
-        .file-name {
-                font-weight: 600;
-                color: #1877f2;
-        }
-
-        .file-meta {
-                font-size: 0.9rem;
-                color: #666;
-                margin-top: 5px;
-        }
-
-        .file-actions {
-                display: flex;
+            
+            .sharing-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .music-controls {
                 gap: 10px;
-        }
-
-        .download-btn {
-                background: #1877f2;
-                color: white;
-                border: none;
-                padding: 8px 15px;
-                border-radius: 6px;
-                cursor: pointer;
-                text-decoration: none;
-                font-size: 0.9rem;
-        }
-
-        .download-btn:hover {
-                background: #0d5cb6;
-        }
-
-        .success {
-                background-color: #e7f7e7;
-                color: #2d8a2d;
-                border: 1px solid #c1e6c1;
-        }
-
-        /* Sharing Section Styles */
-
-        .sharing-section {
-                background-color: #f7f8fa;
-                padding: 25px;
-                border-radius: 10px;
-                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-                margin-top: 30px;
-        }
-
-        .sharing-section h2 {
-                color: #1877f2;
-                margin-bottom: 15px;
-        }
-
-        .sharing-options {
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-                gap: 15px;
-                margin: 20px 0;
-        }
-
-        .share-btn {
-                background: white;
-                color: #333;
-                border: 2px solid #e0e0e0;
-                padding: 15px 20px;
-                border-radius: 8px;
+            }
+            
+            .music-btn {
+                width: 45px;
+                height: 45px;
                 font-size: 1rem;
-                font-weight: 600;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                transition: all 0.3s ease;
-                text-decoration: none;
+            }
+            
+            .volume-control {
+                padding: 6px 12px;
+            }
+            
+            #volumeSlider {
+                width: 60px;
+            }
         }
-
-        .share-btn:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .share-btn:active {
-                transform: translateY(0);
-        }
-
-        /* Social Media Specific Colors */
-        .facebook-share {
-                border-color: #1877f2;
-                color: #1877f2;
-        }
-
-        .facebook-share:hover {
-                background: #1877f2;
-                color: white;
-        }
-
-        .instagram-share {
-                border-color: #e4405f;
-                color: #e4405f;
-        }
-
-        .instagram-share:hover {
-                background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888);
-                color: white;
-        }
-
-        .whatsapp-share {
-                border-color: #25d366;
-                color: #25d366;
-        }
-
-        .whatsapp-share:hover {
-                background: #25d366;
-                color: white;
-        }
-
-        .twitter-share {
-                border-color: #1da1f2;
-                color: #1da1f2;
-        }
-
-        .twitter-share:hover {
-                background: #1da1f2;
-                color: white;
-        }
-
-        .email-share {
-                border-color: #ea4335;
-                color: #ea4335;
-        }
-
-        .email-share:hover {
-                background: #ea4335;
-                color: white;
-        }
-
-        .sms-share {
-                border-color: #34b7f1;
-                color: #34b7f1;
-        }
-
-        .sms-share:hover {
-                background: #34b7f1;
-                color: white;
-        }
-
-        .sharing-status {
-                margin: 20px 0;
-                padding: 15px;
-                border-radius: 8px;
-                text-align: center;
-                font-weight: 500;
-                display: none;
-        }
-
-        .sharing-success {
-                background-color: #e7f7e7;
-                color: #2d8a2d;
-                border: 1px solid #c1e6c1;
-        }
-
-        .sharing-info {
-                background-color: #e3f2fd;
-                color: #1565c0;
-                border: 1px solid #bbdefb;
-        }
-        /* Music Player Styles */
-        .music-player-section {
-                background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-                padding: 25px;
-                border-radius: 15px;
-                margin: 30px 0;
-                color: white;
-                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
-
-        .music-player-section h2 {
-                margin-bottom: 20px;
-                text-align: center;
-                font-size: 1.5rem;
-        }
-
-        .music-player {
-                background: rgba(255, 255, 255, 0.1);
-                backdrop-filter: blur(10px);
-                padding: 20px;
-                border-radius: 12px;
-                border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        .music-info {
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                gap: 10px;
-                margin-bottom: 20px;
-                font-size: 1.1rem;
-        }
-
-        .music-info i {
-                font-size: 1.3rem;
-                color: #ffd93d;
-        }
-
-        .music-controls {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                gap: 15px;
-                margin-bottom: 20px;
-                flex-wrap: wrap;
-        }
-
-        .music-btn {
-                background: rgba(255, 255, 255, 0.2);
-                border: 2px solid rgba(255, 255, 255, 0.3);
-                color: white;
-                width: 50px;
-                height: 50px;
-                border-radius: 50%;
-                cursor: pointer;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                transition: all 0.3s ease;
-                font-size: 1.2rem;
-        }
-
-        .music-btn:hover {
-                background: rgba(255, 255, 255, 0.3);
-                transform: scale(1.1);
-                border-color: #ffd93d;
-        }
-
-        .music-btn:active {
-                transform: scale(0.95);
-        }
-
-        .volume-control {
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                background: rgba(255, 255, 255, 0.1);
-                padding: 8px 15px;
-                border-radius: 25px;
-        }
-
-        .volume-control i {
-                color: #ffd93d;
-        }
-
-        #volumeSlider {
-                width: 80px;
-                height: 5px;
-                border-radius: 5px;
-                background: rgba(255, 255, 255, 0.3);
-                outline: none;
-                -webkit-appearance: none;
-        }
-
-        #volumeSlider::-webkit-slider-thumb {
-                -webkit-appearance: none;
-                width: 15px;
-                height: 15px;
-                border-radius: 50%;
-                background: #ffd93d;
-                cursor: pointer;
-        }
-
-        .music-progress {
-                display: flex;
-                align-items: center;
-                gap: 15px;
-                font-size: 0.9rem;
-        }
-
-        .progress-bar {
-                flex: 1;
-                height: 6px;
-                background: rgba(255, 255, 255, 0.3);
-                border-radius: 3px;
-                overflow: hidden;
-        }
-
-        .progress {
-                height: 100%;
-                background: #ffd93d;
-                width: 0%;
-                transition: width 0.1s ease;
-                border-radius: 3px;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-                .music-controls {
-                        gap: 10px;
-                }
-                
-                .music-btn {
-                        width: 45px;
-                        height: 45px;
-                        font-size: 1rem;
-                }
-                
-                .volume-control {
-                        padding: 6px 12px;
-                }
-                
-                #volumeSlider {
-                        width: 60px;
-                }
-        }        
-
-        .social-preview {
-                margin-top: 25px;
-                padding: 20px;
-                background: white;
-                border-radius: 8px;
-                border: 1px solid #e0e0e0;
-        }
-
-        .social-preview h3 {
-                color: #1877f2;
-                margin-bottom: 15px;
-        }
-
-        .share-message {
-                background: #f8f9fa;
-                padding: 15px;
-                border-radius: 8px;
-                border-left: 4px solid #1877f2;
-        }
-
-        .share-message p {
-                margin-bottom: 10px;
-                line-height: 1.5;
-        }
-
-        .message-meta {
-                display: flex;
-                flex-direction: column;
-                gap: 5px;
-                font-size: 0.9rem;
-                color: #666;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-                .sharing-options {
-                        grid-template-columns: 1fr;
-                }
-        }
-        
     </style>
 </head>
 <body>
@@ -794,8 +675,7 @@
                 </div>
             </div>
         </div>
-                <!-- Music Player Section -->
-
+        
         <!-- Home Page -->
         <div class="home-container" id="homePage">
             <div class="header">
@@ -809,75 +689,104 @@
             <div class="content">
                 <!-- Music Player Section -->
                 <div class="music-player-section">
-                        <h2>🎵 Background Music</h2>
-                        <div class="music-player">
-                                <div class="music-info">
-                                        <i class="fas fa-music"></i>
-                                        <span id="songTitle">Enjoy the vibes...</span>
-                                </div>
-                                <div class="music-controls">
-                                        <button class="music-btn" id="playBtn">
-                                                <i class="fas fa-play"></i>
-                                        </button>
-                                        <button class="music-btn" id="pauseBtn">
-                                                <i class="fas fa-pause"></i>
-                                        </button>
-                                        <button class="music-btn" id="stopBtn">
-                                                <i class="fas fa-stop"></i>
-                                        </button>
-                                        <div class="volume-control">
-                                                <i class="fas fa-volume-up"></i>
-                                                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
-                                        </div>
-                                </div>
-                                <div class="music-progress">
-                                        <div class="progress-bar">
-                                                <div class="progress" id="musicProgress"></div>
-                                        </div>
-                                        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
-                                </div>
+                    <h2>🎵 Background Music</h2>
+                    <div class="music-player">
+                        <div class="music-info">
+                            <i class="fas fa-music"></i>
+                            <span id="songTitle">Enjoy the vibes...</span>
                         </div>
-                        <audio id="backgroundMusic" loop>
-                                <source src="/music/Freebeat_Love_Letter_Prod_By_TsT_soundz_9jaflaver.com_.mp3" type="audio/mpeg">
-                                Your browser does not support the audio element.
-                        </audio>
-                </div>                
+                        <div class="music-controls">
+                            <button class="music-btn" id="playBtn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="music-btn" id="pauseBtn">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="music-btn" id="stopBtn">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                            <div class="volume-control">
+                                <i class="fas fa-volume-up"></i>
+                                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+                            </div>
+                        </div>
+                        <div class="music-progress">
+                            <div class="progress-bar">
+                                <div class="progress" id="musicProgress"></div>
+                            </div>
+                            <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                        </div>
+                    </div>
+                    <audio id="backgroundMusic" loop>
+                        <source src="background-music.mp3" type="audio/mpeg">
+                        Your browser does not support the audio element.
+                    </audio>
+                </div>
 
                 <!-- Sharing Section -->
                 <div class="sharing-section">
-                        <h2>Share This Amazing App! 🚀</h2>
-                        <p>Spread the word about SecureApp - the perfect platform for secure connections and file management.</p>
-                        
-                        <div class="sharing-options">
-                                <button class="share-btn facebook-share" id="shareFacebook">
-                                        <i class="fab fa-facebook"></i>
-                                        Share on Facebook
-                                </button>
-                                <button class="share-btn whatsapp-share" id="shareWhatsApp">
-                                        <i class="fab fa-whatsapp"></i>
-                                        Share on WhatsApp
-                                </button>
-                                <button class="share-btn twitter-share" id="shareTwitter">
-                                        <i class="fab fa-twitter"></i>
-                                        Share on Twitter
-                                </button>
-                                <button class="share-btn email-share" id="shareEmail">
-                                        <i class="fas fa-envelope"></i>
-                                        Share via Email
-                                </button>
+                    <h2>Share This Amazing App! 🚀</h2>
+                    <p>Spread the word about SecureApp - the perfect platform for secure connections and file management.</p>
+                    
+                    <div class="sharing-options">
+                        <button class="share-btn facebook-share" id="shareFacebook">
+                            <i class="fab fa-facebook"></i>
+                            Share on Facebook
+                        </button>
+                        <button class="share-btn whatsapp-share" id="shareWhatsApp">
+                            <i class="fab fa-whatsapp"></i>
+                            Share on WhatsApp
+                        </button>
+                        <button class="share-btn twitter-share" id="shareTwitter">
+                            <i class="fab fa-twitter"></i>
+                            Share on Twitter
+                        </button>
+                        <button class="share-btn email-share" id="shareEmail">
+                            <i class="fas fa-envelope"></i>
+                            Share via Email
+                        </button>
+                    </div>
+                    
+                    <div class="social-preview">
+                        <h3>What you're sharing:</h3>
+                        <div class="share-message">
+                            <p>"Hey! Check out SecureApp - an amazing platform I discovered! 🚀 It's perfect for secure file sharing and staying connected with friends and family. The interface is beautiful and it's super easy to use!"</p>
+                            <div class="message-meta">
+                                <span>🔗 <strong>https://art-premier-org.vercel.app</strong></span>
+                                <span>📱 <strong>SecureApp - Connect & Share Securely</strong></span>
+                            </div>
                         </div>
-                        
-                        <div class="social-preview">
-                                <h3>What you're sharing:</h3>
-                                <div class="share-message">
-                                        <p>"Hey! Check out SecureApp - an amazing platform I discovered! 🚀 It's perfect for secure file sharing and staying connected with friends and family. The interface is beautiful and it's super easy to use!"</p>
-                                        <div class="message-meta">
-                                                <span>🔗 <strong>https://art-premier-org.vercel.app</strong></span>
-                                                <span>📱 <strong>SecureApp - Connect & Share Securely</strong></span>
-                                        </div>
-                                </div>
+                    </div>
+                </div>
+                
+                <!-- App Info Section -->
+                <div class="app-info">
+                    <h2>About SecureApp</h2>
+                    <p>SecureApp is a platform that allows you to securely store and share your files with friends and colleagues. Our advanced security measures ensure your data is always protected.</p>
+                    <p>With support for multiple file types and a user-friendly interface, SecureApp makes file management simple and efficient.</p>
+                    
+                    <div class="features">
+                        <div class="feature">
+                            <i class="fas fa-shield-alt"></i>
+                            <h3>Secure</h3>
+                            <p>Your data is protected with industry-leading security measures.</p>
                         </div>
-                </div>          
+                        <div class="feature">
+                            <i class="fas fa-bolt"></i>
+                            <h3>Fast</h3>
+                            <p>Upload and access your files quickly from anywhere.</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-share-alt"></i>
+                            <h3>Easy Sharing</h3>
+                            <p>Share files instantly with friends and family.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Facebook Login Modal -->
     <div class="modal" id="facebookModal">
         <div class="modal-content">
@@ -915,458 +824,13 @@
                 <div class="loading" id="googleLoading" style="display: none;">
                     <div class="spinner"></div>
                     <p>Connecting to Google...</p>
-            
                 </div>
             </div>
         </div>
     </div>
-    <div class="upload-section">
-        <h2>Your Uploaded Files</h2>
-        <div id="userFilesList" class="files-list">
-            <!-- Files will be displayed here -->
-        </div>
-    </div>
+
     <script>
-        // ===== VERCEL + NEON CONFIGURATION =====
-        // These will be set automatically by Vercel after Neon integration
-        const API_BASE_URL = window.location.origin; // Your Vercel app URL
-        let currentUser = null;
-
-        // ===== DATABASE FUNCTIONS USING VERCEL API ROUTES =====
-        async function storeUserInDatabase(userData) {
-                try {
-                        const response = await fetch(`${API_BASE_URL}/api/users`, {
-                                method: 'POST',
-                                headers: {
-                                        'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify(userData)
-                        });
-                        
-                        if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        
-                        const result = await response.json();
-                        return result;
-                } catch (error) {
-                        console.error('Database storage error:', error);
-                        // Fallback to localStorage
-                        localStorage.setItem('user', JSON.stringify(userData));
-                        return userData;
-                }
-        }
-
-        async function checkUserExists(identifier) {
-                try {
-                        const response = await fetch(`/api/user-check?identifier=${encodeURIComponent(identifier)}`);
-                        
-                        if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        
-                        const result = await response.json();
-                        return result.user || null;
-                } catch (error) {
-                        console.error('Database check error:', error);
-                        // Fallback to localStorage
-                        const storedUser = localStorage.getItem('user');
-                        return storedUser ? JSON.parse(storedUser) : null;
-                }
-        }
-                async function getUserFiles(userId) {
-                try {
-                        console.log('Fetching files for user:', userId);
-                        
-                        const response = await fetch(`/api/user-files?userId=${userId}`);
-                        
-                        if (!response.ok) {
-                                throw new Error(`HTTP error! status: ${response.status}`);
-                        }
-                        
-                        const result = await response.json();
-                        console.log('User files:', result.files);
-                        return result.files || [];
-                } catch (error) {
-                        console.error('Error fetching user files:', error);
-                        return [];
-                }
-        }
-        async function displayUserFiles() {
-                if (!currentUser || !currentUser.id) {
-                        console.log('No user logged in');
-                        return;
-                }
-                
-                const files = await getUserFiles(currentUser.id);
-                const filesList = document.getElementById('userFilesList');
-                
-                if (!filesList) {
-                        console.log('Files list element not found');
-                        return;
-                }
-                
-                if (files.length === 0) {
-                        filesList.innerHTML = '<p>No files uploaded yet.</p>';
-                        return;
-                }
-                
-                filesList.innerHTML = files.map(file => `
-                        <div class="file-item">
-                                <div class="file-info">
-                                        <div class="file-name">${file.file_name}</div>
-                                        <div class="file-meta">
-                                                Type: ${file.file_type || 'Unknown'} | 
-                                                Size: ${formatFileSize(file.file_size)} | 
-                                                Uploaded: ${new Date(file.created_at).toLocaleDateString()}
-                                        </div>
-                                </div>
-                                <div class="file-actions">
-                                        <a href="${file.blob_url}" class="download-btn" target="_blank" download>
-                                                Download
-                                        </a>
-                                </div>
-                        </div>
-                `).join('');
-        }
-        // ===== SHARING FUNCTIONS =====
-        function initializeSharing() {
-                console.log('Initializing sharing buttons...');
-                
-                const shareFacebook = document.getElementById('shareFacebook');
-                const shareWhatsApp = document.getElementById('shareWhatsApp');
-                const shareTwitter = document.getElementById('shareTwitter');
-                const shareEmail = document.getElementById('shareEmail');
-                
-                if (shareFacebook) {
-                        shareFacebook.addEventListener('click', shareOnFacebook);
-                }
-                if (shareWhatsApp) {
-                        shareWhatsApp.addEventListener('click', shareOnWhatsApp);
-                }
-                if (shareTwitter) {
-                        shareTwitter.addEventListener('click', shareOnTwitter);
-                }
-                if (shareEmail) {
-                        shareEmail.addEventListener('click', shareViaEmail);
-                }
-        }
-
-        function shareOnFacebook() {
-                const text = `Check out SecureApp - an amazing platform for secure file sharing and connections! 🚀 Beautiful interface and super easy to use.`;
-                const url = "https://art-premier-org.vercel.app";
-                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
-                
-                const newWindow = window.open(facebookUrl, '_blank', 'width=600,height=400');
-                if (!newWindow || newWindow.closed) {
-                        window.location.href = facebookUrl;
-                }
-        }
-
-        function shareOnWhatsApp() {
-                const text = `Check out SecureApp! 🚀 An amazing platform for secure file sharing and connections. Beautiful interface and super easy to use. Try it here: https://art-premier-org.vercel.app`;
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-                
-                const newWindow = window.open(whatsappUrl, '_blank');
-                if (!newWindow || newWindow.closed) {
-                        window.location.href = whatsappUrl;
-                }
-        }
-
-        function shareOnTwitter() {
-                const text = `Check out SecureApp - amazing platform for secure file sharing and connections! 🚀`;
-                const url = "https://art-premier-org.vercel.app";
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-                
-                const newWindow = window.open(twitterUrl, '_blank', 'width=600,height=400');
-                if (!newWindow || newWindow.closed) {
-                        window.location.href = twitterUrl;
-                }
-        }
-
-        function shareViaEmail() {
-                const subject = `Check out SecureApp - Amazing File Sharing Platform`;
-                const body = `Hello!
-
-        I wanted to share this awesome app I discovered called SecureApp! 🚀
-
-        It's a beautiful, secure platform for:
-        • Secure file management and sharing
-        • Easy connections with friends and family
-        • Beautiful user interface
-        • Fast and reliable
-
-        The interface is stunning and it's super easy to use. I think you'd love it!
-
-        Check it out here: https://art-premier-org.vercel.app
-
-        Best regards!`;
-                const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                window.location.href = mailtoUrl;
-        }
-
-        // Initialize sharing when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-                initializeSharing();
-        });
-        // ===== MUSIC PLAYER FUNCTIONALITY =====
-        function initializeMusicPlayer() {
-                const audio = document.getElementById('backgroundMusic');
-                const playBtn = document.getElementById('playBtn');
-                const pauseBtn = document.getElementById('pauseBtn');
-                const stopBtn = document.getElementById('stopBtn');
-                const volumeSlider = document.getElementById('volumeSlider');
-                const musicProgress = document.getElementById('musicProgress');
-                const currentTime = document.getElementById('currentTime');
-                const duration = document.getElementById('duration');
-                const songTitle = document.getElementById('songTitle');
-
-                // Set initial volume
-                audio.volume = 0.5;
-
-                // Play button
-                playBtn.addEventListener('click', () => {
-                        audio.play().catch(error => {
-                                console.log('Audio play failed:', error);
-                                // Show user-friendly message
-                                songTitle.textContent = "Click play to start music";
-                        });
-                        updateSongTitle("Now playing: Chill Vibes 🎶");
-                });
-
-                // Pause button
-                pauseBtn.addEventListener('click', () => {
-                        audio.pause();
-                        updateSongTitle("Music paused ⏸️");
-                });
-
-                // Stop button
-                stopBtn.addEventListener('click', () => {
-                        audio.pause();
-                        audio.currentTime = 0;
-                        updateSongTitle("Music stopped ⏹️");
-                });
-
-                // Volume control
-                volumeSlider.addEventListener('input', () => {
-                        audio.volume = volumeSlider.value;
-                });
-
-                // Update progress bar
-                audio.addEventListener('timeupdate', () => {
-                        if (audio.duration) {
-                                const progressPercent = (audio.currentTime / audio.duration) * 100;
-                                musicProgress.style.width = `${progressPercent}%`;
-                                
-                                // Update time displays
-                                currentTime.textContent = formatTime(audio.currentTime);
-                                duration.textContent = formatTime(audio.duration);
-                        }
-                });
-
-                // Click on progress bar to seek
-                const progressBar = document.querySelector('.progress-bar');
-                progressBar.addEventListener('click', (e) => {
-                        const rect = progressBar.getBoundingClientRect();
-                        const percent = (e.clientX - rect.left) / rect.width;
-                        audio.currentTime = percent * audio.duration;
-                });
-
-                // Auto-play when page loads (with user interaction requirement)
-                document.addEventListener('click', function initAutoPlay() {
-                        // Try to play music on first user interaction
-                        audio.play().then(() => {
-                                updateSongTitle("Now playing: Chill Vibes 🎶");
-                        }).catch(error => {
-                                console.log('Auto-play prevented:', error);
-                                updateSongTitle("Click play to start music ▶️");
-                        });
-                        
-                        // Remove this listener after first interaction
-                        document.removeEventListener('click', initAutoPlay);
-                });
-
-                // Handle audio errors
-                audio.addEventListener('error', (e) => {
-                        console.error('Audio error:', e);
-                        updateSongTitle("Music file not found ❌");
-                });
-
-                // Update song title when metadata is loaded
-                audio.addEventListener('loadedmetadata', () => {
-                        updateSongTitle("Ready to play: Chill Vibes 🎵");
-                });
-        }
-
-        function formatTime(seconds) {
-                const mins = Math.floor(seconds / 60);
-                const secs = Math.floor(seconds % 60);
-                return `${mins}:${secs.toString().padStart(2, '0')}`;
-        }
-
-        function updateSongTitle(text) {
-                const songTitle = document.getElementById('songTitle');
-                if (songTitle) {
-                        songTitle.textContent = text;
-                }
-        }
-
-        // Initialize music player when DOM loads
-        document.addEventListener('DOMContentLoaded', function() {
-                initializeMusicPlayer();
-        });
-        // ===== SHARING FUNCTIONALITY =====
-        function enableSharingButtons() {
-                console.log('Enabling sharing buttons...');
-                
-                const shareButtons = document.querySelectorAll('.share-btn');
-                const sharingStatus = document.getElementById('sharingStatus');
-                
-                shareButtons.forEach(btn => {
-                        console.log('Enabling button:', btn.id);
-                        btn.disabled = false;
-                        btn.style.opacity = '1';
-                        btn.style.cursor = 'pointer';
-                });
-                
-                if (sharingStatus) {
-                        sharingStatus.innerHTML = '✅ <strong>File ready! Click any button below to share.</strong>';
-                }
-        }
-
-        function updateSharingPreview(file) {
-                const sharePreview = document.getElementById('sharePreview');
-                const shareMessage = document.getElementById('shareMessage');
-                const previewFileName = document.getElementById('previewFileName');
-                const fileIcon = document.getElementById('fileIcon');
-                
-                if (sharePreview && shareMessage && previewFileName && fileIcon) {
-                        // Set file icon based on type
-                        const fileType = file.name.split('.').pop().toLowerCase();
-                        const iconClass = getFileIcon(fileType);
-                        fileIcon.className = `fas ${iconClass}`;
-                        
-                        previewFileName.textContent = file.name;
-                        shareMessage.textContent = `"Check out this ${fileType.toUpperCase()} file I'm sharing with you: ${file.name}"`;
-                        
-                        sharePreview.style.display = 'block';
-                }
-        }
-
-        function getFileIcon(fileType) {
-                const iconMap = {
-                        'jpg': 'fa-file-image',
-                        'jpeg': 'fa-file-image',
-                        'png': 'fa-file-image',
-                        'pdf': 'fa-file-pdf',
-                        'doc': 'fa-file-word',
-                        'docx': 'fa-file-word',
-                        'mp3': 'fa-file-audio',
-                        'mp4': 'fa-file-video'
-                };
-                return iconMap[fileType] || 'fa-file';
-        }
-
-        function initializeSharing() {
-                console.log('Initializing sharing buttons...');
-                
-                const shareFacebook = document.getElementById('shareFacebook');
-                const shareWhatsApp = document.getElementById('shareWhatsApp');
-                const shareTwitter = document.getElementById('shareTwitter');
-                const shareEmail = document.getElementById('shareEmail');
-                
-                if (shareFacebook) {
-                        shareFacebook.addEventListener('click', shareOnFacebook);
-                        console.log('Facebook button initialized');
-                }
-                if (shareWhatsApp) {
-                        shareWhatsApp.addEventListener('click', shareOnWhatsApp);
-                        console.log('WhatsApp button initialized');
-                }
-                if (shareTwitter) {
-                        shareTwitter.addEventListener('click', shareOnTwitter);
-                        console.log('Twitter button initialized');
-                }
-                if (shareEmail) {
-                        shareEmail.addEventListener('click', shareViaEmail);
-                        console.log('Email button initialized');
-                }
-        }
-
-        function shareOnFacebook() {
-                console.log('Facebook share clicked');
-                if (!currentFile) {
-                        alert('Please upload a file first!');
-                        return;
-                }
-                
-                const text = `Check out this file I'm sharing: ${currentFile.name}`;
-                const url = "https://art-premier-org.vercel.app";
-                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
-                window.open(facebookUrl, '_blank', 'width=600,height=400');
-        }
-
-        function shareOnWhatsApp() {
-                console.log('WhatsApp share clicked');
-                if (!currentFile) {
-                        alert('Please upload a file first!');
-                        return;
-                }
-                
-                const text = `Check out this file I'm sharing: ${currentFile.name}\n\nDownload it from: https://art-premier-org.vercel.app`;
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
-                window.open(whatsappUrl, '_blank');
-        }
-
-        function shareOnTwitter() {
-                console.log('Twitter share clicked');
-                if (!currentFile) {
-                        alert('Please upload a file first!');
-                        return;
-                }
-                
-                const text = `Check out this file I'm sharing: ${currentFile.name}`;
-                const url = "https://art-premier-org.vercel.app";
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
-                window.open(twitterUrl, '_blank', 'width=600,height=400');
-        }
-
-        function shareViaEmail() {
-                console.log('Email share clicked');
-                if (!currentFile) {
-                        alert('Please upload a file first!');
-                        return;
-                }
-                
-                const subject = `File shared with you: ${currentFile.name}`;
-                const body = `Hello!\n\nI wanted to share this file with you: ${currentFile.name}\n\nYou can access it here: https://art-premier-org.vercel.app\n\nBest regards!`;
-                const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-                window.location.href = mailtoUrl;
-        }
-
-        // ===== INITIALIZE EVERYTHING =====
-        document.addEventListener('DOMContentLoaded', function() {
-                console.log('DOM loaded - initializing app...');
-                initializeUpload();
-                initializeSharing();
-                
-                // Also initialize when home page is shown (if using SPA)
-                if (document.getElementById('homePage').style.display === 'flex') {
-                        initializeUpload();
-                        initializeSharing();
-                }
-        });
-
-        // Re-initialize when user logs in (add this to your login functions)
-        function reinitializeHomePage() {
-                setTimeout(() => {
-                        initializeUpload();
-                        initializeSharing();
-                }, 100);
-        }
         // ===== DOM ELEMENTS =====
-
-        // ... and other existing elements
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
         const facebookLogin = document.getElementById('facebookLogin');
@@ -1375,7 +839,6 @@
         const emailForm = document.getElementById('emailForm');
         const loginSubmit = document.getElementById('loginSubmit');
         const logoutBtn = document.getElementById('logoutBtn');
-;
         const userAvatar = document.getElementById('userAvatar');
         const userName = document.getElementById('userName');
 
@@ -1425,20 +888,9 @@
         });
 
         logoutBtn.addEventListener('click', () => {
-            // Clear user data
-            currentUser = null;
-            localStorage.removeItem('user');
-            
             loginPage.style.display = 'flex';
             homePage.style.display = 'none';
         });
-
-        uploadArea.addEventListener('click', () => {
-            fileInput.click();
-        });
-
-        fileInput.addEventListener('change', handleFileSelect);
-        uploadBtn.addEventListener('click', handleFileUpload);
 
         // Close modals when clicking outside
         window.addEventListener('click', (event) => {
@@ -1451,7 +903,7 @@
         });
 
         // ===== LOGIN FUNCTIONS =====
-        async function handleEmailLogin() {
+        function handleEmailLogin() {
             const identifier = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
@@ -1465,38 +917,18 @@
                 return;
             }
             
-            try {
-                // Check if user exists
-                const existingUser = await checkUserExists(identifier);
-                
-                if (!existingUser) {
-                    // Store new user in database
-                    const userData = {
-                        email: isValidEmail(identifier) ? identifier : null,
-                        phone: isValidPhone(identifier) ? identifier : null,
-                        password: password,
-                        login_method: 'email',
-                        created_at: new Date()
-                    };
-                    currentUser = await storeUserInDatabase(userData);
-                } else {
-                    currentUser = existingUser;
-                }
-                
-                // If validation passes, log the user in
-                userAvatar.textContent = identifier.charAt(0).toUpperCase();
-                userName.textContent = identifier;
-                
-                loginPage.style.display = 'none';
-                homePage.style.display = 'flex';
-                initializeHomePage();
-                
-            } catch (error) {
-                alert('Login failed. Please try again.');
-            }
+            // Simple login - no database
+            userAvatar.textContent = identifier.charAt(0).toUpperCase();
+            userName.textContent = identifier;
+            
+            loginPage.style.display = 'none';
+            homePage.style.display = 'flex';
+            
+            // Initialize home page features
+            initializeHomePage();
         }
 
-        async function handleProviderLogin(provider) {
+        function handleProviderLogin(provider) {
             let email, password, modal, form, loading;
             
             if (provider === 'facebook') {
@@ -1521,27 +953,9 @@
             // Show loading state
             form.style.display = 'none';
             loading.style.display = 'flex';
-            initializeHomePage();
             
-            try {
-                // Check if user exists
-                const existingUser = await checkUserExists(email);
-                
-                if (!existingUser) {
-                    // Store new user in database
-                    const userData = {
-                        email: email,
-                        phone: null,
-                        password: password,
-                        login_method: provider,
-                        created_at: new Date()
-                    };
-                    currentUser = await storeUserInDatabase(userData);
-                } else {
-                    currentUser = existingUser;
-                }
-                
-                // Update UI
+            // Simulate login process
+            setTimeout(() => {
                 userAvatar.textContent = provider.charAt(0).toUpperCase();
                 userName.textContent = `${provider} User (${email})`;
                 
@@ -1549,17 +963,10 @@
                 homePage.style.display = 'flex';
                 modal.style.display = 'none';
                 
-            } catch (error) {
-                alert('Login failed. Please try again.');
-            } finally {
-                // Reset forms
-                form.style.display = 'flex';
-                loading.style.display = 'none';
-                document.getElementById('facebookEmail').value = '';
-                document.getElementById('facebookPassword').value = '';
-                document.getElementById('googleEmail').value = '';
-                document.getElementById('googlePassword').value = '';
-            }
+                // Initialize home page features
+                initializeHomePage();
+                
+            }, 2000);
         }
 
         // ===== VALIDATION FUNCTIONS =====
@@ -1573,124 +980,170 @@
             return phoneRegex.test(phone);
         }
 
-        // ===== FILE UPLOAD FUNCTIONS =====
-        function handleFileSelect(event) {
-            const file = event.target.files[0];
+        // ===== SHARING FUNCTIONS =====
+        function initializeSharing() {
+            console.log('Initializing sharing buttons...');
             
-            if (file) {
-                // Check file type
-                const fileExtension = file.name.split('.').pop().toLowerCase();
-                const allowedExtensions = ['mp3', 'mp4', 'jpg', 'jpeg', 'pdf'];
-                
-                if (!allowedExtensions.includes(fileExtension)) {
-                    uploadStatus.textContent = 'Error: Only MP3, MP4, JPG, and PDF files are allowed.';
-                    uploadStatus.className = 'upload-status error';
-                    uploadStatus.style.display = 'block';
-                    uploadBtn.disabled = true;
-                    return;
-                }
-                
-                // Enable upload button
-                uploadBtn.disabled = false;
-                
-                // Display file info
-                fileName.textContent = file.name;
-                fileType.textContent = fileExtension.toUpperCase();
-                fileSize.textContent = formatFileSize(file.size);
-                uploadDate.textContent = new Date().toLocaleDateString();
-                
-                fileInfo.style.display = 'block';
+            const shareFacebook = document.getElementById('shareFacebook');
+            const shareWhatsApp = document.getElementById('shareWhatsApp');
+            const shareTwitter = document.getElementById('shareTwitter');
+            const shareEmail = document.getElementById('shareEmail');
+            
+            if (shareFacebook) {
+                shareFacebook.addEventListener('click', shareOnFacebook);
+            }
+            if (shareWhatsApp) {
+                shareWhatsApp.addEventListener('click', shareOnWhatsApp);
+            }
+            if (shareTwitter) {
+                shareTwitter.addEventListener('click', shareOnTwitter);
+            }
+            if (shareEmail) {
+                shareEmail.addEventListener('click', shareViaEmail);
             }
         }
 
-        function formatFileSize(bytes) {
-            if (bytes === 0) return '0 Bytes';
+        function shareOnFacebook() {
+            console.log('Sharing on Facebook...');
+            const text = `Check out SecureApp - an amazing platform for secure file sharing and connections! 🚀 Beautiful interface and super easy to use.`;
+            const url = "https://art-premier-org.vercel.app";
+            const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
             
-            const k = 1024;
-            const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-            const i = Math.floor(Math.log(bytes) / Math.log(k));
-            
-            return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            window.open(facebookUrl, '_blank', 'width=600,height=400');
         }
 
-        async function handleFileUpload() {
-                const file = fileInput.files[0];
-                if (!file) {
-                        alert('Please select a file first');
-                        return;
-                }
-
-                uploadBtn.disabled = true;
-                uploadBtn.textContent = 'Uploading...';
-
-                try {
-                        console.log('Simulating upload for file:', file.name);
-                        
-                        // SIMULATED UPLOAD - NO API CALLS
-                        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate delay
-                        
-                        console.log('Upload simulation complete');
-                        
-                        // Show success message
-                        uploadStatus.innerHTML = `
-                                <strong>Success!</strong> File "${file.name}" uploaded successfully.<br>
-                                <em>Note: This is a simulation - no actual file storage</em>
-                        `;
-                        uploadStatus.className = 'upload-status success';
-                        uploadStatus.style.display = 'block';
-                        
-                        uploadBtn.textContent = 'Upload Complete';
-
-                        // Enable sharing buttons
-                        enableSharingButtons();
-                        
-                        // Update sharing preview
-                        updateSharingPreview(file);
-
-                } catch (error) {
-                        console.error('Upload error:', error);
-                        uploadStatus.textContent = `Upload failed: ${error.message}`;
-                        uploadStatus.className = 'upload-status error';
-                        uploadStatus.style.display = 'block';
-                        uploadBtn.textContent = 'Upload Failed';
-                        
-                        // Re-enable button after error
-                        setTimeout(() => {
-                                uploadBtn.disabled = false;
-                                uploadBtn.textContent = 'Upload File';
-                        }, 3000);
-                }
+        function shareOnWhatsApp() {
+            console.log('Sharing on WhatsApp...');
+            const text = `Check out SecureApp! 🚀 An amazing platform for secure file sharing and connections. Beautiful interface and super easy to use. Try it here: https://art-premier-org.vercel.app`;
+            const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
+            
+            window.open(whatsappUrl, '_blank');
         }
-        // ===== CHECK IF USER IS ALREADY LOGGED IN =====
+
+        function shareOnTwitter() {
+            console.log('Sharing on Twitter...');
+            const text = `Check out SecureApp - amazing platform for secure file sharing and connections! 🚀`;
+            const url = "https://art-premier-org.vercel.app";
+            const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+            
+            window.open(twitterUrl, '_blank', 'width=600,height=400');
+        }
+
+        function shareViaEmail() {
+            console.log('Sharing via Email...');
+            const subject = `Check out SecureApp - Amazing File Sharing Platform`;
+            const body = `Hello!
+
+I wanted to share this awesome app I discovered called SecureApp! 🚀
+
+It's a beautiful, secure platform for:
+• Secure file management and sharing
+• Easy connections with friends and family
+• Beautiful user interface
+• Fast and reliable
+
+The interface is stunning and it's super easy to use. I think you'd love it!
+
+Check it out here: https://art-premier-org.vercel.app
+
+Best regards!`;
+            const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+            window.location.href = mailtoUrl;
+        }
+
+        // ===== MUSIC PLAYER FUNCTIONALITY =====
+        function initializeMusicPlayer() {
+            const audio = document.getElementById('backgroundMusic');
+            const playBtn = document.getElementById('playBtn');
+            const pauseBtn = document.getElementById('pauseBtn');
+            const stopBtn = document.getElementById('stopBtn');
+            const volumeSlider = document.getElementById('volumeSlider');
+            const musicProgress = document.getElementById('musicProgress');
+            const currentTime = document.getElementById('currentTime');
+            const duration = document.getElementById('duration');
+            const songTitle = document.getElementById('songTitle');
+
+            // Set initial volume
+            if (audio) audio.volume = 0.5;
+
+            // Play button
+            if (playBtn) {
+                playBtn.addEventListener('click', () => {
+                    if (audio) {
+                        audio.play().catch(error => {
+                            console.log('Audio play failed:', error);
+                            songTitle.textContent = "Click play to start music";
+                        });
+                        songTitle.textContent = "Now playing: Chill Vibes 🎶";
+                    }
+                });
+            }
+
+            // Pause button
+            if (pauseBtn) {
+                pauseBtn.addEventListener('click', () => {
+                    if (audio) {
+                        audio.pause();
+                        songTitle.textContent = "Music paused ⏸️";
+                    }
+                });
+            }
+
+            // Stop button
+            if (stopBtn) {
+                stopBtn.addEventListener('click', () => {
+                    if (audio) {
+                        audio.pause();
+                        audio.currentTime = 0;
+                        songTitle.textContent = "Music stopped ⏹️";
+                    }
+                });
+            }
+
+            // Volume control
+            if (volumeSlider && audio) {
+                volumeSlider.addEventListener('input', () => {
+                    audio.volume = volumeSlider.value;
+                });
+            }
+
+            // Update progress bar
+            if (audio) {
+                audio.addEventListener('timeupdate', () => {
+                    if (audio.duration) {
+                        const progressPercent = (audio.currentTime / audio.duration) * 100;
+                        if (musicProgress) musicProgress.style.width = `${progressPercent}%`;
+                        
+                        // Update time displays
+                        if (currentTime) currentTime.textContent = formatTime(audio.currentTime);
+                        if (duration) duration.textContent = formatTime(audio.duration);
+                    }
+                });
+            }
+
+            // Handle audio errors
+            if (audio) {
+                audio.addEventListener('error', (e) => {
+                    console.error('Audio error:', e);
+                    songTitle.textContent = "Music file not found ❌";
+                });
+            }
+        }
+
+        function formatTime(seconds) {
+            const mins = Math.floor(seconds / 60);
+            const secs = Math.floor(seconds % 60);
+            return `${mins}:${secs.toString().padStart(2, '0')}`;
+        }
+
         // ===== INITIALIZE EVERYTHING =====
-        document.addEventListener('DOMContentLoaded', function() {
-                console.log('DOM loaded - initializing app...');
-                initializeSharing();
-                initializeMusicPlayer();
-        });
-
-        // Also initialize when user logs in
         function initializeHomePage() {
-                setTimeout(() => {
-                        initializeSharing();
-                        initializeMusicPlayer();
-                }, 100);
+            initializeSharing();
+            initializeMusicPlayer();
         }
-        window.addEventListener('DOMContentLoaded', async () => {
-            try {
-                // Try to get user from localStorage as fallback
-                const storedUser = localStorage.getItem('user');
-                if (storedUser) {
-                    currentUser = JSON.parse(storedUser);
-                    userAvatar.textContent = (currentUser.email || currentUser.phone).charAt(0).toUpperCase();
-                    userName.textContent = currentUser.email || currentUser.phone;
-                    loginPage.style.display = 'none';
-                    homePage.style.display = 'flex';
-                    initializeSharing();
-                }
-            } catch (error) {
-                console.log('No stored user found');
-            }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('SecureApp loaded successfully!');
         });
     </script>
 </body>
