@@ -38,7 +38,7 @@
         .container {
             width: 100%;
             max-width: 1200px;
-            background: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(20px);
             border-radius: 24px;
             border: 1px solid rgba(255, 255, 255, 0.2);
@@ -345,14 +345,14 @@
             background: rgba(255, 255, 255, 0.95);
         }
 
-        /* Modern Music Player Styles */
+        /* FIXED Music Player Styles - Dark theme for visibility */
         .music-player-section {
-            background: linear-gradient(135deg, var(--glass), var(--glass-dark));
+            background: linear-gradient(135deg, #1f2937, #374151);
             padding: 32px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: white;
         }
 
         .music-player-section h2 {
@@ -475,6 +475,7 @@
         .song-item span {
             flex: 1;
             font-weight: 500;
+            color: white;
         }
 
         .song-duration {
@@ -484,6 +485,7 @@
             padding: 4px 8px;
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
         }
 
         .music-controls {
@@ -525,6 +527,7 @@
             padding: 12px 20px;
             border-radius: 25px;
             backdrop-filter: blur(10px);
+            color: white;
         }
 
         .volume-control i {
@@ -578,12 +581,12 @@
 
         /* Modern Sharing Section */
         .sharing-section {
-            background: linear-gradient(135deg, var(--glass), var(--glass-dark));
+            background: linear-gradient(135deg, #1f2937, #374151);
             padding: 32px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: white;
         }
 
         .sharing-section h2 {
@@ -675,6 +678,7 @@
             border-radius: 16px;
             border: 1px solid rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
+            color: white;
         }
 
         .social-preview h3 {
@@ -714,12 +718,12 @@
 
         /* App Info Section */
         .app-info {
-            background: linear-gradient(135deg, var(--glass), var(--glass-dark));
+            background: linear-gradient(135deg, #1f2937, #374151);
             padding: 32px;
             border-radius: 20px;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            color: white;
         }
 
         .app-info h2 {
@@ -751,6 +755,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             transition: all 0.3s ease;
             backdrop-filter: blur(10px);
+            color: white;
         }
 
         .feature:hover {
@@ -861,6 +866,7 @@
             font-size: 1rem;
             transition: all 0.3s ease;
             background: white;
+            color: var(--dark);
         }
 
         .provider-form input:focus {
