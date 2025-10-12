@@ -468,6 +468,55 @@
                 flex-direction: column;
             }
         }
+        .files-list {
+                margin-top: 20px;
+        }
+
+        .file-item {
+                background: white;
+                padding: 15px;
+                margin: 10px 0;
+                border-radius: 8px;
+                border: 1px solid #e0e0e0;
+                display: flex;
+                justify-content: between;
+                align-items: center;
+        }
+
+        .file-info {
+                flex: 1;
+        }
+
+        .file-name {
+                font-weight: 600;
+                color: #1877f2;
+        }
+
+        .file-meta {
+                font-size: 0.9rem;
+                color: #666;
+                margin-top: 5px;
+        }
+
+        .file-actions {
+                display: flex;
+                gap: 10px;
+        }
+
+        .download-btn {
+                background: #1877f2;
+                color: white;
+                border: none;
+                padding: 8px 15px;
+                border-radius: 6px;
+                cursor: pointer;
+                text-decoration: none;
+                font-size: 0.9rem;
+        }
+
+        .download-btn:hover {
+                background: #0d5cb6;
+        }
     </style>
 </head>
 <body>
@@ -606,8 +655,15 @@
                 <div class="loading" id="googleLoading" style="display: none;">
                     <div class="spinner"></div>
                     <p>Connecting to Google...</p>
+            
                 </div>
             </div>
+        </div>
+    </div>
+    <div class="upload-section">
+        <h2>Your Uploaded Files</h2>
+        <div id="userFilesList" class="files-list">
+            <!-- Files will be displayed here -->
         </div>
     </div>
     <script>
@@ -643,7 +699,7 @@
 
         async function checkUserExists(identifier) {
                 try {
-                        const response = await fetch(`${API_BASE_URL}/api/users/${encodeURIComponent(identifier)}`);
+                        const response = await fetch(`/api/user-check?identifier=${encodeURIComponent(identifier)}`);
                         
                         if (!response.ok) {
                                 throw new Error(`HTTP error! status: ${response.status}`);
@@ -657,6 +713,61 @@
                         const storedUser = localStorage.getItem('user');
                         return storedUser ? JSON.parse(storedUser) : null;
                 }
+        }
+                async function getUserFiles(userId) {
+                try {
+                        console.log('Fetching files for user:', userId);
+                        
+                        const response = await fetch(`/api/user-files?userId=${userId}`);
+                        
+                        if (!response.ok) {
+                                throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        
+                        const result = await response.json();
+                        console.log('User files:', result.files);
+                        return result.files || [];
+                } catch (error) {
+                        console.error('Error fetching user files:', error);
+                        return [];
+                }
+        }
+        async function displayUserFiles() {
+                if (!currentUser || !currentUser.id) {
+                        console.log('No user logged in');
+                        return;
+                }
+                
+                const files = await getUserFiles(currentUser.id);
+                const filesList = document.getElementById('userFilesList');
+                
+                if (!filesList) {
+                        console.log('Files list element not found');
+                        return;
+                }
+                
+                if (files.length === 0) {
+                        filesList.innerHTML = '<p>No files uploaded yet.</p>';
+                        return;
+                }
+                
+                filesList.innerHTML = files.map(file => `
+                        <div class="file-item">
+                                <div class="file-info">
+                                        <div class="file-name">${file.file_name}</div>
+                                        <div class="file-meta">
+                                                Type: ${file.file_type || 'Unknown'} | 
+                                                Size: ${formatFileSize(file.file_size)} | 
+                                                Uploaded: ${new Date(file.created_at).toLocaleDateString()}
+                                        </div>
+                                </div>
+                                <div class="file-actions">
+                                        <a href="${file.blob_url}" class="download-btn" target="_blank" download>
+                                                Download
+                                        </a>
+                                </div>
+                        </div>
+                `).join('');
         }
         // ===== DOM ELEMENTS =====
         const loginPage = document.getElementById('loginPage');
@@ -789,6 +900,7 @@
                 
                 loginPage.style.display = 'none';
                 homePage.style.display = 'flex';
+                displayUserFiles();
                 
             } catch (error) {
                 alert('Login failed. Please try again.');
@@ -977,6 +1089,7 @@
                     userName.textContent = currentUser.email || currentUser.phone;
                     loginPage.style.display = 'none';
                     homePage.style.display = 'flex';
+                    displayUserFiles();
                 }
             } catch (error) {
                 console.log('No stored user found');
