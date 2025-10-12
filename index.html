@@ -457,6 +457,110 @@
         .download-btn:hover {
                 background: #0d5cb6;
         }
+        /* Upload Section Styles */
+        .upload-section {
+                background-color: #f7f8fa;
+                padding: 25px;
+                border-radius: 10px;
+                box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+                margin-bottom: 30px;
+        }
+
+        .upload-section h2 {
+                color: #1877f2;
+                margin-bottom: 15px;
+        }
+
+        .upload-area {
+                border: 2px dashed #ddd;
+                border-radius: 8px;
+                padding: 40px 20px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.3s;
+                margin-bottom: 15px;
+                background: white;
+        }
+
+        .upload-area:hover {
+                border-color: #1877f2;
+                background-color: #f0f7ff;
+        }
+
+        .upload-area i {
+                font-size: 3rem;
+                color: #1877f2;
+                margin-bottom: 15px;
+        }
+
+        .upload-area h3 {
+                margin-bottom: 10px;
+                color: #333;
+        }
+
+        .file-input {
+                display: none;
+        }
+
+        .upload-btn {
+                background-color: #1877f2;
+                color: white;
+                border: none;
+                padding: 12px 25px;
+                border-radius: 6px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s;
+                width: 100%;
+        }
+
+        .upload-btn:hover:not(:disabled) {
+                background-color: #0d5cb6;
+                transform: translateY(-2px);
+        }
+
+        .upload-btn:disabled {
+                background-color: #cccccc;
+                cursor: not-allowed;
+                transform: none;
+        }
+
+        .upload-status {
+                margin-top: 15px;
+                padding: 10px;
+                border-radius: 6px;
+                text-align: center;
+                font-weight: 500;
+        }
+
+        .success {
+                background-color: #e7f7e7;
+                color: #2d8a2d;
+                border: 1px solid #c1e6c1;
+        }
+
+        .error {
+                background-color: #fde8e8;
+                color: #c53030;
+                border: 1px solid #f5c6c6;
+        }
+
+        .file-info {
+                margin-top: 20px;
+                padding: 15px;
+                background-color: #f0f7ff;
+                border-radius: 8px;
+                border-left: 4px solid #1877f2;
+        }
+
+        .file-info h3 {
+                color: #1877f2;
+                margin-bottom: 10px;
+        }
+
+        /* Sharing Section Styles */
+
         .sharing-section {
                 background-color: #f7f8fa;
                 padding: 25px;
@@ -675,6 +779,30 @@
                 </div>
             </div>
             <div class="content">
+                <div class="upload-section">
+                    <h2>Upload Your File</h2>
+                        <p>Select a file to upload. Supported formats: MP3, MP4, JPG, PDF</p>
+        
+                    <div class="upload-area" id="uploadArea">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <h3>Drag & Drop your file here</h3>
+                        <p>or click to browse</p>
+                        <input type="file" id="fileInput" class="file-input" accept=".mp3,.mp4,.jpg,.jpeg,.pdf">
+                    </div>
+        
+                    <button class="upload-btn" id="uploadBtn" disabled>Upload File</button>
+        
+                    <div class="upload-status" id="uploadStatus"></div>
+        
+                    <div class="file-info" id="fileInfo">
+                        <h3>File Information</h3>
+                        <p><strong>File Name:</strong> <span id="fileName">-</span></p>
+                        <p><strong>File Type:</strong> <span id="fileType">-</span></p>
+                        <p><strong>File Size:</strong> <span id="fileSize">-</span></p>
+                        <p><strong>Upload Date:</strong> <span id="uploadDate">-</span></p>
+                    </div>
+                </div>
+                
                 <div class="sharing-section">
                         <h2>Share with Friends & Family</h2>
                         <p>Share instantly with your social networks and messaging apps.</p>
@@ -898,164 +1026,203 @@
                 `).join('');
         }
         // ===== SHARING FUNCTIONS =====
-        // ===== SOCIAL MEDIA SHARING FUNCTIONS =====
+        // ===== UPLOAD FUNCTIONALITY =====
+        let currentFile = null;
+
+        function initializeUpload() {
+                const uploadArea = document.getElementById('uploadArea');
+                const fileInput = document.getElementById('fileInput');
+                const uploadBtn = document.getElementById('uploadBtn');
+                
+                uploadArea.addEventListener('click', () => {
+                        fileInput.click();
+                });
+                
+                fileInput.addEventListener('change', handleFileSelect);
+                uploadBtn.addEventListener('click', handleFileUpload);
+        }
+
+        function handleFileSelect(event) {
+                const file = event.target.files[0];
+                const uploadBtn = document.getElementById('uploadBtn');
+                const uploadStatus = document.getElementById('uploadStatus');
+                
+                if (file) {
+                        // Check file type
+                        const fileExtension = file.name.split('.').pop().toLowerCase();
+                        const allowedExtensions = ['mp3', 'mp4', 'jpg', 'jpeg', 'png', 'pdf', 'doc', 'docx'];
+                        
+                        if (!allowedExtensions.includes(fileExtension)) {
+                                uploadStatus.textContent = 'Error: File type not supported. Please select MP3, MP4, JPG, PNG, PDF, or DOC files.';
+                                uploadStatus.className = 'upload-status error';
+                                uploadStatus.style.display = 'block';
+                                uploadBtn.disabled = true;
+                                return;
+                        }
+                        
+                        // Enable upload button
+                        uploadBtn.disabled = false;
+                        currentFile = file;
+                        
+                        // Display file info
+                        displayFileInfo(file);
+                        
+                        uploadStatus.textContent = 'File selected. Click "Upload File" to proceed.';
+                        uploadStatus.className = 'upload-status';
+                        uploadStatus.style.display = 'block';
+                }
+        }
+
+        function displayFileInfo(file) {
+                const fileInfo = document.getElementById('fileInfo');
+                const fileName = document.getElementById('fileName');
+                const fileType = document.getElementById('fileType');
+                const fileSize = document.getElementById('fileSize');
+                const uploadDate = document.getElementById('uploadDate');
+                
+                fileName.textContent = file.name;
+                fileType.textContent = file.type || 'Unknown';
+                fileSize.textContent = formatFileSize(file.size);
+                uploadDate.textContent = new Date().toLocaleString();
+                
+                fileInfo.style.display = 'block';
+        }
+
+        function formatFileSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+
+        function handleFileUpload() {
+                const uploadBtn = document.getElementById('uploadBtn');
+                const uploadStatus = document.getElementById('uploadStatus');
+                const fileInfo = document.getElementById('fileInfo');
+                
+                if (!currentFile) return;
+                
+                uploadBtn.disabled = true;
+                uploadBtn.textContent = 'Uploading...';
+                
+                // Simulate upload process
+                setTimeout(() => {
+                        uploadStatus.textContent = '✅ File uploaded successfully! You can now share it.';
+                        uploadStatus.className = 'upload-status success';
+                        
+                        uploadBtn.textContent = 'Upload Complete';
+                        
+                        // Enable sharing buttons
+                        enableSharingButtons();
+                        
+                        // Update sharing preview
+                        updateSharingPreview(currentFile);
+                        
+                }, 2000);
+        }
+
+        // ===== SHARING FUNCTIONALITY =====
+        function enableSharingButtons() {
+                const shareButtons = document.querySelectorAll('.share-btn');
+                const sharingStatus = document.getElementById('sharingStatus');
+                
+                shareButtons.forEach(btn => {
+                        btn.disabled = false;
+                });
+                
+                sharingStatus.innerHTML = '✅ <strong>File ready! Click any button below to share.</strong>';
+        }
+
+        function updateSharingPreview(file) {
+                const sharePreview = document.getElementById('sharePreview');
+                const shareMessage = document.getElementById('shareMessage');
+                const previewFileName = document.getElementById('previewFileName');
+                const fileIcon = document.getElementById('fileIcon');
+                
+                // Set file icon based on type
+                const fileType = file.name.split('.').pop().toLowerCase();
+                const iconClass = getFileIcon(fileType);
+                fileIcon.className = `fas ${iconClass}`;
+                
+                previewFileName.textContent = file.name;
+                shareMessage.textContent = `"Check out this ${fileType.toUpperCase()} file I'm sharing with you: ${file.name}"`;
+                
+                sharePreview.style.display = 'block';
+        }
+
+        function getFileIcon(fileType) {
+                const iconMap = {
+                        'jpg': 'fa-file-image',
+                        'jpeg': 'fa-file-image',
+                        'png': 'fa-file-image',
+                        'pdf': 'fa-file-pdf',
+                        'doc': 'fa-file-word',
+                        'docx': 'fa-file-word',
+                        'mp3': 'fa-file-audio',
+                        'mp4': 'fa-file-video'
+                };
+                return iconMap[fileType] || 'fa-file';
+        }
+
         function initializeSharing() {
                 const shareFacebook = document.getElementById('shareFacebook');
-                const shareInstagram = document.getElementById('shareInstagram');
                 const shareWhatsApp = document.getElementById('shareWhatsApp');
                 const shareTwitter = document.getElementById('shareTwitter');
                 const shareEmail = document.getElementById('shareEmail');
-                const shareSMS = document.getElementById('shareSMS');
                 
-                const sharingStatus = document.getElementById('sharingStatus');
-                
-                // Share message content
-                const shareData = {
-                        text: "Check out this awesome app I'm using! 🚀 It helps me stay connected and share files securely with friends and family. You should try it too!",
-                        url: "https://art-premier-org.vercel.app",
-                        title: "SecureApp - Connect & Share"
-                };
-                
-                if (shareFacebook) {
-                        shareFacebook.addEventListener('click', () => shareOnFacebook(shareData));
-                }
-                
-                if (shareInstagram) {
-                        shareInstagram.addEventListener('click', () => shareOnInstagram(shareData));
-                }
-                
-                if (shareWhatsApp) {
-                        shareWhatsApp.addEventListener('click', () => shareOnWhatsApp(shareData));
-                }
-                
-                if (shareTwitter) {
-                        shareTwitter.addEventListener('click', () => shareOnTwitter(shareData));
-                }
-                
-                if (shareEmail) {
-                        shareEmail.addEventListener('click', () => shareViaEmail(shareData));
-                }
-                
-                if (shareSMS) {
-                        shareSMS.addEventListener('click', () => shareViaSMS(shareData));
-                }
+                shareFacebook.addEventListener('click', () => shareOnFacebook());
+                shareWhatsApp.addEventListener('click', () => shareOnWhatsApp());
+                shareTwitter.addEventListener('click', () => shareOnTwitter());
+                shareEmail.addEventListener('click', () => shareViaEmail());
         }
 
-        function shareOnFacebook(shareData) {
-                const sharingStatus = document.getElementById('sharingStatus');
-                sharingStatus.textContent = "Opening Facebook...";
-                sharingStatus.className = 'sharing-status sharing-info';
-                sharingStatus.style.display = 'block';
+        function shareOnFacebook() {
+                if (!currentFile) return;
                 
-                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareData.url)}&quote=${encodeURIComponent(shareData.text)}`;
+                const text = `Check out this file I'm sharing: ${currentFile.name}`;
+                const url = "https://art-premier-org.vercel.app";
+                const facebookUrl = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}&quote=${encodeURIComponent(text)}`;
                 window.open(facebookUrl, '_blank', 'width=600,height=400');
-                
-                setTimeout(() => {
-                        sharingStatus.textContent = "✅ Facebook sharing window opened!";
-                        sharingStatus.className = 'sharing-status sharing-success';
-                }, 1000);
         }
 
-        function shareOnInstagram(shareData) {
-                const sharingStatus = document.getElementById('sharingStatus');
-                sharingStatus.textContent = "Instagram app will open for sharing stories...";
-                sharingStatus.className = 'sharing-status sharing-info';
-                sharingStatus.style.display = 'block';
+        function shareOnWhatsApp() {
+                if (!currentFile) return;
                 
-                // Note: Instagram doesn't have direct web sharing, this opens the app
-                const instagramUrl = `https://www.instagram.com/`;
-                window.open(instagramUrl, '_blank');
-                
-                setTimeout(() => {
-                        sharingStatus.textContent = "ℹ️ Please share manually on Instagram Stories";
-                        sharingStatus.className = 'sharing-status sharing-info';
-                }, 1000);
-        }
-
-        function shareOnWhatsApp(shareData) {
-                const sharingStatus = document.getElementById('sharingStatus');
-                sharingStatus.textContent = "Opening WhatsApp...";
-                sharingStatus.className = 'sharing-status sharing-info';
-                sharingStatus.style.display = 'block';
-                
-                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(shareData.text + ' ' + shareData.url)}`;
+                const text = `Check out this file I'm sharing: ${currentFile.name}\n\nDownload it from: https://art-premier-org.vercel.app`;
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
                 window.open(whatsappUrl, '_blank');
-                
-                setTimeout(() => {
-                        sharingStatus.textContent = "✅ WhatsApp sharing opened!";
-                        sharingStatus.className = 'sharing-status sharing-success';
-                }, 1000);
         }
 
-        function shareOnTwitter(shareData) {
-                const sharingStatus = document.getElementById('sharingStatus');
-                sharingStatus.textContent = "Opening Twitter...";
-                sharingStatus.className = 'sharing-status sharing-info';
-                sharingStatus.style.display = 'block';
+        function shareOnTwitter() {
+                if (!currentFile) return;
                 
-                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(shareData.text)}&url=${encodeURIComponent(shareData.url)}`;
+                const text = `Check out this file I'm sharing: ${currentFile.name}`;
+                const url = "https://art-premier-org.vercel.app";
+                const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
                 window.open(twitterUrl, '_blank', 'width=600,height=400');
-                
-                setTimeout(() => {
-                        sharingStatus.textContent = "✅ Twitter sharing window opened!";
-                        sharingStatus.className = 'sharing-status sharing-success';
-                }, 1000);
         }
 
-        function shareViaEmail(shareData) {
-                const sharingStatus = document.getElementById('sharingStatus');
-                sharingStatus.textContent = "Opening email client...";
-                sharingStatus.className = 'sharing-status sharing-info';
-                sharingStatus.style.display = 'block';
+        function shareViaEmail() {
+                if (!currentFile) return;
                 
-                const subject = encodeURIComponent(shareData.title);
-                const body = encodeURIComponent(shareData.text + '\n\n' + shareData.url);
-                const mailtoUrl = `mailto:?subject=${subject}&body=${body}`;
+                const subject = `File shared with you: ${currentFile.name}`;
+                const body = `Hello!\n\nI wanted to share this file with you: ${currentFile.name}\n\nYou can access it here: https://art-premier-org.vercel.app\n\nBest regards!`;
+                const mailtoUrl = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
                 window.location.href = mailtoUrl;
-                
-                setTimeout(() => {
-                        sharingStatus.textContent = "✅ Email client opened!";
-                        sharingStatus.className = 'sharing-status sharing-success';
-                }, 1000);
         }
 
-        function shareViaSMS(shareData) {
-                const sharingStatus = document.getElementById('sharingStatus');
-                sharingStatus.textContent = "Opening SMS...";
-                sharingStatus.className = 'sharing-status sharing-info';
-                sharingStatus.style.display = 'block';
-                
-                const smsBody = encodeURIComponent(shareData.text + ' ' + shareData.url);
-                const smsUrl = `sms:?body=${smsBody}`;
-                window.location.href = smsUrl;
-                
-                setTimeout(() => {
-                        sharingStatus.textContent = "✅ SMS app opened!";
-                        sharingStatus.className = 'sharing-status sharing-success';
-                }, 1000);
-        }
-
-        // Modern Web Share API (for mobile devices)
-        function initializeNativeSharing() {
-                const nativeShareBtn = document.getElementById('nativeShare');
-                if (nativeShareBtn && navigator.share) {
-                        nativeShareBtn.style.display = 'block';
-                        nativeShareBtn.addEventListener('click', shareNative);
-                }
-        }
-
-        async function shareNative() {
-                try {
-                        await navigator.share({
-                                title: 'SecureApp - Connect & Share',
-                                text: "Check out this awesome app I'm using! 🚀",
-                                url: 'https://art-premier-org.vercel.app',
-                        });
-                } catch (error) {
-                        console.log('Native sharing cancelled:', error);
-                }
-        }
+        // ===== INITIALIZE EVERYTHING =====
+        document.addEventListener('DOMContentLoaded', function() {
+                initializeUpload();
+                initializeSharing();
+        });
         // ===== DOM ELEMENTS =====
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const uploadStatus = document.getElementById('uploadStatus');
+        // ... and other existing elements
         const loginPage = document.getElementById('loginPage');
         const homePage = document.getElementById('homePage');
         const facebookLogin = document.getElementById('facebookLogin');
@@ -1064,10 +1231,6 @@
         const emailForm = document.getElementById('emailForm');
         const loginSubmit = document.getElementById('loginSubmit');
         const logoutBtn = document.getElementById('logoutBtn');
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const uploadBtn = document.getElementById('uploadBtn');
-        const uploadStatus = document.getElementById('uploadStatus');
         const fileInfo = document.getElementById('fileInfo');
         const fileName = document.getElementById('fileName');
         const fileType = document.getElementById('fileType');
