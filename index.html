@@ -1534,58 +1534,32 @@
                         return;
                 }
 
-                // Get user ID - try multiple sources
-                let userId = currentUser?.id || localStorage.getItem('currentUserId');
-                if (!userId) {
-                        alert('Please login first');
-                        return;
-                }
-
                 uploadBtn.disabled = true;
                 uploadBtn.textContent = 'Uploading...';
 
                 try {
-                        const formData = new FormData();
-                        formData.append('file', file);
-                        formData.append('userId', userId);
-
-                        console.log('Uploading file:', file.name, 'for user:', userId);
+                        console.log('Simulating upload for file:', file.name);
                         
-                        const response = await fetch('/api/upload', {
-                                method: 'POST',
-                                body: formData
-                        });
-
-                        // Check if response is JSON
-                        const contentType = response.headers.get('content-type');
-                        if (!contentType || !contentType.includes('application/json')) {
-                                const text = await response.text();
-                                console.error('Non-JSON response:', text.substring(0, 100));
-                                throw new Error('Server returned an error page. Please check if the upload API exists.');
-                        }
-
-                        const result = await response.json();
+                        // SIMULATED UPLOAD - NO API CALLS
+                        await new Promise(resolve => setTimeout(resolve, 1500)); // Simulate delay
                         
-                        if (!response.ok) {
-                                throw new Error(result.error || `Upload failed with status ${response.status}`);
-                        }
-
-                        console.log('Upload successful:', result);
+                        console.log('Upload simulation complete');
                         
                         // Show success message
                         uploadStatus.innerHTML = `
-                                <strong>Success!</strong> File "${result.fileName}" uploaded successfully.<br>
-                                <a href="${result.downloadUrl}" target="_blank" style="color: #1877f2; text-decoration: underline; margin-top: 10px; display: inline-block;">
-                                        Download File
-                                </a>
+                                <strong>Success!</strong> File "${file.name}" uploaded successfully.<br>
+                                <em>Note: This is a simulation - no actual file storage</em>
                         `;
                         uploadStatus.className = 'upload-status success';
                         uploadStatus.style.display = 'block';
                         
                         uploadBtn.textContent = 'Upload Complete';
 
-                        // Refresh the files list
-                        displayUserFiles();
+                        // Enable sharing buttons
+                        enableSharingButtons();
+                        
+                        // Update sharing preview
+                        updateSharingPreview(file);
 
                 } catch (error) {
                         console.error('Upload error:', error);
