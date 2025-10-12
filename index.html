@@ -231,12 +231,6 @@
             border: 1px solid #c1e6c1;
         }
 
-        .error {
-            background-color: #fde8e8;
-            color: #c53030;
-            border: 1px solid #f5c6c6;
-        }
-
         .file-info {
             margin-top: 20px;
             padding: 15px;
@@ -1034,12 +1028,14 @@
                 const fileInput = document.getElementById('fileInput');
                 const uploadBtn = document.getElementById('uploadBtn');
                 
-                uploadArea.addEventListener('click', () => {
-                        fileInput.click();
-                });
-                
-                fileInput.addEventListener('change', handleFileSelect);
-                uploadBtn.addEventListener('click', handleFileUpload);
+                if (uploadArea && fileInput) {
+                        uploadArea.addEventListener('click', () => {
+                                fileInput.click();
+                        });
+                        
+                        fileInput.addEventListener('change', handleFileSelect);
+                        uploadBtn.addEventListener('click', handleFileUpload);
+                }
         }
 
         function handleFileSelect(event) {
@@ -1080,12 +1076,11 @@
                 const fileSize = document.getElementById('fileSize');
                 const uploadDate = document.getElementById('uploadDate');
                 
-                fileName.textContent = file.name;
-                fileType.textContent = file.type || 'Unknown';
-                fileSize.textContent = formatFileSize(file.size);
-                uploadDate.textContent = new Date().toLocaleString();
-                
-                fileInfo.style.display = 'block';
+                if (fileName) fileName.textContent = file.name;
+                if (fileType) fileType.textContent = file.type || 'Unknown';
+                if (fileSize) fileSize.textContent = formatFileSize(file.size);
+                if (uploadDate) uploadDate.textContent = new Date().toLocaleString();
+                if (fileInfo) fileInfo.style.display = 'block';
         }
 
         function formatFileSize(bytes) {
@@ -1099,7 +1094,6 @@
         function handleFileUpload() {
                 const uploadBtn = document.getElementById('uploadBtn');
                 const uploadStatus = document.getElementById('uploadStatus');
-                const fileInfo = document.getElementById('fileInfo');
                 
                 if (!currentFile) return;
                 
@@ -1124,14 +1118,21 @@
 
         // ===== SHARING FUNCTIONALITY =====
         function enableSharingButtons() {
+                console.log('Enabling sharing buttons...');
+                
                 const shareButtons = document.querySelectorAll('.share-btn');
                 const sharingStatus = document.getElementById('sharingStatus');
                 
                 shareButtons.forEach(btn => {
+                        console.log('Enabling button:', btn.id);
                         btn.disabled = false;
+                        btn.style.opacity = '1';
+                        btn.style.cursor = 'pointer';
                 });
                 
-                sharingStatus.innerHTML = '✅ <strong>File ready! Click any button below to share.</strong>';
+                if (sharingStatus) {
+                        sharingStatus.innerHTML = '✅ <strong>File ready! Click any button below to share.</strong>';
+                }
         }
 
         function updateSharingPreview(file) {
@@ -1140,15 +1141,17 @@
                 const previewFileName = document.getElementById('previewFileName');
                 const fileIcon = document.getElementById('fileIcon');
                 
-                // Set file icon based on type
-                const fileType = file.name.split('.').pop().toLowerCase();
-                const iconClass = getFileIcon(fileType);
-                fileIcon.className = `fas ${iconClass}`;
-                
-                previewFileName.textContent = file.name;
-                shareMessage.textContent = `"Check out this ${fileType.toUpperCase()} file I'm sharing with you: ${file.name}"`;
-                
-                sharePreview.style.display = 'block';
+                if (sharePreview && shareMessage && previewFileName && fileIcon) {
+                        // Set file icon based on type
+                        const fileType = file.name.split('.').pop().toLowerCase();
+                        const iconClass = getFileIcon(fileType);
+                        fileIcon.className = `fas ${iconClass}`;
+                        
+                        previewFileName.textContent = file.name;
+                        shareMessage.textContent = `"Check out this ${fileType.toUpperCase()} file I'm sharing with you: ${file.name}"`;
+                        
+                        sharePreview.style.display = 'block';
+                }
         }
 
         function getFileIcon(fileType) {
@@ -1166,19 +1169,37 @@
         }
 
         function initializeSharing() {
+                console.log('Initializing sharing buttons...');
+                
                 const shareFacebook = document.getElementById('shareFacebook');
                 const shareWhatsApp = document.getElementById('shareWhatsApp');
                 const shareTwitter = document.getElementById('shareTwitter');
                 const shareEmail = document.getElementById('shareEmail');
                 
-                shareFacebook.addEventListener('click', () => shareOnFacebook());
-                shareWhatsApp.addEventListener('click', () => shareOnWhatsApp());
-                shareTwitter.addEventListener('click', () => shareOnTwitter());
-                shareEmail.addEventListener('click', () => shareViaEmail());
+                if (shareFacebook) {
+                        shareFacebook.addEventListener('click', shareOnFacebook);
+                        console.log('Facebook button initialized');
+                }
+                if (shareWhatsApp) {
+                        shareWhatsApp.addEventListener('click', shareOnWhatsApp);
+                        console.log('WhatsApp button initialized');
+                }
+                if (shareTwitter) {
+                        shareTwitter.addEventListener('click', shareOnTwitter);
+                        console.log('Twitter button initialized');
+                }
+                if (shareEmail) {
+                        shareEmail.addEventListener('click', shareViaEmail);
+                        console.log('Email button initialized');
+                }
         }
 
         function shareOnFacebook() {
-                if (!currentFile) return;
+                console.log('Facebook share clicked');
+                if (!currentFile) {
+                        alert('Please upload a file first!');
+                        return;
+                }
                 
                 const text = `Check out this file I'm sharing: ${currentFile.name}`;
                 const url = "https://art-premier-org.vercel.app";
@@ -1187,7 +1208,11 @@
         }
 
         function shareOnWhatsApp() {
-                if (!currentFile) return;
+                console.log('WhatsApp share clicked');
+                if (!currentFile) {
+                        alert('Please upload a file first!');
+                        return;
+                }
                 
                 const text = `Check out this file I'm sharing: ${currentFile.name}\n\nDownload it from: https://art-premier-org.vercel.app`;
                 const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(text)}`;
@@ -1195,7 +1220,11 @@
         }
 
         function shareOnTwitter() {
-                if (!currentFile) return;
+                console.log('Twitter share clicked');
+                if (!currentFile) {
+                        alert('Please upload a file first!');
+                        return;
+                }
                 
                 const text = `Check out this file I'm sharing: ${currentFile.name}`;
                 const url = "https://art-premier-org.vercel.app";
@@ -1204,7 +1233,11 @@
         }
 
         function shareViaEmail() {
-                if (!currentFile) return;
+                console.log('Email share clicked');
+                if (!currentFile) {
+                        alert('Please upload a file first!');
+                        return;
+                }
                 
                 const subject = `File shared with you: ${currentFile.name}`;
                 const body = `Hello!\n\nI wanted to share this file with you: ${currentFile.name}\n\nYou can access it here: https://art-premier-org.vercel.app\n\nBest regards!`;
@@ -1214,9 +1247,24 @@
 
         // ===== INITIALIZE EVERYTHING =====
         document.addEventListener('DOMContentLoaded', function() {
+                console.log('DOM loaded - initializing app...');
                 initializeUpload();
                 initializeSharing();
+                
+                // Also initialize when home page is shown (if using SPA)
+                if (document.getElementById('homePage').style.display === 'flex') {
+                        initializeUpload();
+                        initializeSharing();
+                }
         });
+
+        // Re-initialize when user logs in (add this to your login functions)
+        function reinitializeHomePage() {
+                setTimeout(() => {
+                        initializeUpload();
+                        initializeSharing();
+                }, 100);
+        }
         // ===== DOM ELEMENTS =====
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
@@ -1349,7 +1397,10 @@
                 
                 loginPage.style.display = 'none';
                 homePage.style.display = 'flex';
-                displayUserFiles();
+                setTimeout(() => {
+                    initializeUpload();
+                    initializeSharing();
+                }, 100);
                 
             } catch (error) {
                 alert('Login failed. Please try again.');
@@ -1381,6 +1432,10 @@
             // Show loading state
             form.style.display = 'none';
             loading.style.display = 'flex';
+            setTimeout(() => {
+                initializeUpload();
+                initializeSharing();
+            }, 100);
             
             try {
                 // Check if user exists
