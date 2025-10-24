@@ -6,7 +6,7 @@ const pool = new Pool({
 });
 
 export default async function handler(req, res) {
-  const allowedOrigins = ['https://your-app.vercel.app', 'https://art-premier-org.vercel.app'];
+  const allowedOrigins = ['https://art-premier-org.vercel.app'];
   const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
