@@ -1179,12 +1179,13 @@
         // ===== DATABASE FUNCTIONS =====
         async function storeUserInDatabase(userData) {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/users`, {
+                const response = await fetch(`https://art-premier-org.vercel.app/api/users`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(userData)
+                    mode: 'cors'
             
                 });
                 
@@ -1204,7 +1205,7 @@
 
         async function checkUserExists(identifier) {
             try {
-                const response = await fetch(`${API_BASE_URL}/api/user-check?identifier=${encodeURIComponent(identifier)}`);
+                const response = await fetch(`https://art-premier-org.vercel.app/api/user-check?identifier=${encodeURIComponent(identifier)}`);
                 
                 if (!response.ok) {
                     throw new Error(`HTTP error! status: ${response.status}`);
