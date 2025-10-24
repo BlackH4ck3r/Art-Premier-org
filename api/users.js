@@ -17,9 +17,12 @@ export default async function handler(req, res) {
 
   try {
     if (req.method === 'POST') {
-      const { email, phone, password, loginMethod } = req.body;
+      // FIX: Match frontend field names
+      const { email, phone, password, login_method, failed_attempts, last_attempt } = req.body;
       
-      // Create table if not exists
+      console.log('📥 Received data:', req.body); // Add this for debugging
+      
+      // Create table if not exists (add new columns)
       await pool.query(`
         CREATE TABLE IF NOT EXISTS users (
           id SERIAL PRIMARY KEY,
@@ -27,21 +30,25 @@ export default async function handler(req, res) {
           phone VARCHAR(20),
           password VARCHAR(255),
           login_method VARCHAR(50),
+          failed_attempts INTEGER DEFAULT 0,
+          last_attempt TIMESTAMP,
           created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
         )
       `);
       
       const result = await pool.query(
-        'INSERT INTO users (email, phone, password, login_method) VALUES ($1, $2, $3, $4) RETURNING *',
-        [email, phone, password, loginMethod]
+        'INSERT INTO users (email, phone, password, login_method, failed_attempts, last_attempt) VALUES ($1, $2, $3, $4, $5, $6) RETURNING *',
+        [email, phone, password, login_method, failed_attempts, last_attempt]
       );
+      
+      console.log('✅ Stored in DB:', result.rows[0]); // Add this for debugging
       
       return res.status(200).json(result.rows[0]);
     } else {
       return res.status(405).json({ error: 'Method not allowed' });
     }
   } catch (error) {
-    console.error('Database error:', error);
+    console.error('❌ Database error:', error);
     return res.status(500).json({ error: error.message });
   }
 }
