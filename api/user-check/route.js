@@ -7,13 +7,12 @@ const pool = new Pool({
 
 export default async function handler(req, res) {
   const allowedOrigins = ['https://your-app.vercel.app', 'https://art-premier-org.vercel.app'];
-  const origin = req.headers.origin || '*';
+  const origin = req.headers.origin;
   if (allowedOrigins.includes(origin)) {
     res.setHeader('Access-Control-Allow-Origin', origin);
   } else {
     res.setHeader('Access-Control-Allow-Origin', '*');
   }
-  res.setHeader('Access-Control-Allow-Origin', origin);
   res.setHeader('Access-Control-Allow-Credentials', 'true');
   res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
   res.setHeader('Access-Control-Allow-Headers', 'Content-Type, accept');
